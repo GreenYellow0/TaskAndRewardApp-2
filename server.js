@@ -20,8 +20,10 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     password: String,
     email: { type: String, unique: true },
     tasks: [{ task: String, coins: Number }],
-    rewards: [{ reward: String, cost: Number }]
+    rewards: [{ reward: String, cost: Number }],
+    notes: [String]  // New field for storing user notes
   });
+  
   
 
 
@@ -242,7 +244,54 @@ app.get('/task-and-reward', (req, res) => {
   res.render('task-and-reward', { user });
 });
 
-// ...
+// Keyholder Portal route
+app.get('/keyholder-portal', (req, res) => {
+  res.render('keyholder-portal', { user: req.user });
+});
+
+
+// Save note route
+app.post('/saveNote', (req, res) => {
+  const userId = req.user._id;
+  const { note } = req.body;
+
+  User.findByIdAndUpdate(userId, { $push: { notes: note } })
+    .then(() => {
+      res.redirect('/keyholder-portal');
+    })
+    .catch(err => {
+      console.error(err);
+      res.redirect('/keyholder-portal');
+    });
+});
+
+// Remove note route
+app.post('/removeNote', (req, res) => {
+  const userId = req.user._id;
+  const noteIndex = req.body.noteIndex;
+
+  User.findById(userId)
+    .then(user => {
+      if (!user) {
+        console.error('User not found');
+        res.redirect('/keyholder-portal');
+      } else {
+        user.notes.splice(noteIndex, 1);
+        user.save()
+          .then(() => {
+            res.redirect('/keyholder-portal');
+          })
+          .catch(err => {
+            console.error(err);
+            res.redirect('/keyholder-portal');
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.redirect('/keyholder-portal');
+    });
+});
 
 
 
