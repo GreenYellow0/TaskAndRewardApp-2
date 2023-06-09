@@ -7,7 +7,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const passportLocalMongoose = require('passport-local-mongoose');
 const flash = require('connect-flash');
-
+ 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://greenyellowblue123:J7O9WXBP09XMp8f6@database.91i3x3n.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
