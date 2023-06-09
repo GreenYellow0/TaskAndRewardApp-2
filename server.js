@@ -15,12 +15,15 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
 
-// Create a user schema
-const userSchema = new mongoose.Schema({
-  username: { type: String, unique: true },
-  password: String,
-  email: { type: String, unique: true }
-});
+  const userSchema = new mongoose.Schema({
+    username: { type: String, unique: true },
+    password: String,
+    email: { type: String, unique: true },
+    tasks: [{ task: String, coins: Number }],
+    rewards: [{ reward: String, cost: Number }]
+  });
+  
+
 
 userSchema.plugin(passportLocalMongoose); // Add passport-local-mongoose plugin
 
@@ -156,6 +159,81 @@ app.post('/profile/:id', (req, res) => {
       res.redirect('/dashboard');
     });
 });
+
+
+// Save task route
+app.post('/saveTask', (req, res) => {
+  const { task, coins } = req.body;
+  const userId = req.user._id;
+
+  // Create a new task object with task and coins
+  const newTask = { task, coins };
+
+  // Save the task to the database for the user
+  User.findByIdAndUpdate(userId, { $push: { tasks: newTask } })
+    .then(() => {
+      res.redirect('/dashboard');
+    })
+    .catch(err => {
+      console.error(err);
+      res.redirect('/dashboard');
+    });
+});
+
+// Save reward route
+app.post('/saveReward', (req, res) => {
+  const { reward, cost } = req.body;
+  const userId = req.user._id;
+
+  // Create a new reward object with reward and cost
+  const newReward = { reward, cost };
+
+  // Save the reward to the database for the user
+  User.findByIdAndUpdate(userId, { $push: { rewards: newReward } })
+    .then(() => {
+      res.redirect('/dashboard');
+    })
+    .catch(err => {
+      console.error(err);
+      res.redirect('/dashboard');
+    });
+});
+
+
+
+// ...
+
+// Remove task route
+app.post('/removeTask', (req, res) => {
+  const userId = req.user._id;
+  const taskId = req.body.taskId;
+
+  User.findByIdAndUpdate(userId, { $pull: { tasks: { _id: taskId } } })
+    .then(() => {
+      res.json({ success: true, message: 'Task removed successfully.' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.json({ success: false, message: 'An error occurred while removing the task.' });
+    });
+});
+
+// Remove reward route
+app.post('/removeReward', (req, res) => {
+  const userId = req.user._id;
+  const rewardId = req.body.rewardId;
+
+  User.findByIdAndUpdate(userId, { $pull: { rewards: { _id: rewardId } } })
+    .then(() => {
+      res.json({ success: true, message: 'Reward removed successfully.' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.json({ success: false, message: 'An error occurred while removing the reward.' });
+    });
+});
+
+
 
 
 
