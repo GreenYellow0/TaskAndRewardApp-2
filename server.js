@@ -7,9 +7,11 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const passportLocalMongoose = require('passport-local-mongoose');
 const flash = require('connect-flash');
+require('dotenv').config();
+
  
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://greenyellowblue123:J7O9WXBP09XMp8f6@database.91i3x3n.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
 
@@ -28,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(session({
-  secret: '0f8da1d858f9e0d86f0db0e3ea22d15e625381abdf1494fd83423299265de1b0cc665a57ae43ffbc1b1cfcb7045c056fd33c96ce7ee7f34c45e966b84ea157f4',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
