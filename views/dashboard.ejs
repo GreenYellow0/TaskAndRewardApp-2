@@ -11,86 +11,9 @@
   <a href="/logout">Logout</a>
   <% if (user) { %>
     <a href="/profile/<%= user._id %>">Edit Profile</a>
-
-    <h2>Tasks</h2>
-    <form id="taskForm" action="/saveTask" method="POST">
-      <input type="text" name="task" placeholder="Enter a task" required>
-      <input type="number" name="coins" placeholder="Enter coins" required>
-      <button type="submit">Save Task</button>
-    </form>
-
-    <% if (user.tasks && user.tasks.length > 0) { %>
-      <ul>
-        <% user.tasks.forEach(task => { %>
-          <li><%= task.task %> - <%= task.coins %> coins <button onclick="removeTask('<%= task._id %>')">Remove</button></li>
-        <% }) %>
-      </ul>
-    <% } else { %>
-      <p>No tasks found.</p>
-    <% } %>
-
-    <h2>Rewards</h2>
-    <form id="rewardForm" action="/saveReward" method="POST">
-      <input type="text" name="reward" placeholder="Enter a reward" required>
-      <input type="number" name="cost" placeholder="Enter cost" required>
-      <button type="submit">Save Reward</button>
-    </form>
-
-    <% if (user.rewards && user.rewards.length > 0) { %>
-      <ul>
-        <% user.rewards.forEach(reward => { %>
-          <li><%= reward.reward %> - <%= reward.cost %> coins <button onclick="removeReward('<%= reward._id %>')">Remove</button></li>
-        <% }) %>
-      </ul>
-    <% } else { %>
-      <p>No rewards found.</p>
-    <% } %>
+    <a href="/task-and-reward">Manage Tasks and Rewards</a> <!-- New button to redirect to task-and-reward page -->
 
   <% } %>
   <script src="/script.js"></script>
-  <script>
-    function removeTask(taskId) {
-      // Send an AJAX request to remove the task
-      fetch('/removeTask', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ taskId: taskId }) // Pass taskId as an object property
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Refresh the page after successfully removing the task
-            location.reload();
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
-  
-    function removeReward(rewardId) {
-      // Send an AJAX request to remove the reward
-      fetch('/removeReward', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ rewardId: rewardId }) // Pass rewardId as an object property
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Refresh the page after successfully removing the reward
-            location.reload();
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
-  </script>
-  
 </body>
 </html>

@@ -172,11 +172,11 @@ app.post('/saveTask', (req, res) => {
   // Save the task to the database for the user
   User.findByIdAndUpdate(userId, { $push: { tasks: newTask } })
     .then(() => {
-      res.redirect('/dashboard');
+      res.redirect('/task-and-reward'); // Redirect to the task-and-reward page instead of the dashboard
     })
     .catch(err => {
       console.error(err);
-      res.redirect('/dashboard');
+      res.redirect('/task-and-reward'); // Redirect to the task-and-reward page instead of the dashboard
     });
 });
 
@@ -191,15 +191,13 @@ app.post('/saveReward', (req, res) => {
   // Save the reward to the database for the user
   User.findByIdAndUpdate(userId, { $push: { rewards: newReward } })
     .then(() => {
-      res.redirect('/dashboard');
+      res.redirect('/task-and-reward'); // Redirect to the task-and-reward page instead of the dashboard
     })
     .catch(err => {
       console.error(err);
-      res.redirect('/dashboard');
+      res.redirect('/task-and-reward'); // Redirect to the task-and-reward page instead of the dashboard
     });
 });
-
-
 
 // ...
 
@@ -232,6 +230,20 @@ app.post('/removeReward', (req, res) => {
       res.json({ success: false, message: 'An error occurred while removing the reward.' });
     });
 });
+
+
+
+// ...
+
+// Task and Reward route
+app.get('/task-and-reward', (req, res) => {
+  // Assuming you have user information available in req.user
+  const user = req.user;
+  res.render('task-and-reward', { user });
+});
+
+// ...
+
 
 
 
