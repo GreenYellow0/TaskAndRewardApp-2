@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  
+
+
 </head>
 <body>
 
 
 
+
+ <div class="container-normal">
   <h1>Welcome, <%= user ? user.username : '' %>!</h1>
   <% if (user) { %>
     <button onclick="location.href='/profile/<%= user._id %>'">Edit Profile</button>
@@ -17,10 +23,13 @@
     <button onclick="location.href='/keyholder-portal'">Keyholder Portal</button>
   <% } %>
   <button onclick="location.href='/logout'">Logout</button>
+ </div>
+
+
+
 
 
   
-  
-  <script src="/script.js"></script>
+<script src="/script.js"></script>
 </body>
 </html>

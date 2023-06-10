@@ -7,31 +7,34 @@
   <link rel="stylesheet" href="/stylesheets/styles.css">
 </head>
 <body>
-  <h1>Welcome to the Keyholder Portal, <%= user ? user.username : '' %>!</h1>
-  <a href="/dashboard">Back to Dashboard</a>
 
-  <form action="/saveNote" method="POST">
-    <textarea name="note" rows="10" cols="50"></textarea>
-    <br>
-    <button type="submit">Save Note</button>
-  </form>
-
-  <h2>My Notes</h2>
-  <% if (user && user.notes.length > 0) { %>
-    <ul>
-      <% user.notes.forEach((note, index) => { %>
-        <li>
-          <%= note %>
-          <form action="/removeNote" method="POST" style="display: inline;">
-            <input type="hidden" name="noteIndex" value="<%= index %>">
-            <button type="submit">Remove</button>
-          </form>
-        </li>
-      <% }); %>
-    </ul>
-  <% } else { %>
-    <p>No notes found.</p>
-  <% } %>
+  <div class="container-normal">
+    <h1>Welcome to the Keyholder Portal, <%= user ? user.username : '' %>!</h1>
+    <a href="/dashboard">Back to Dashboard</a>
+  
+    <form action="/saveNote" method="POST">
+      <textarea name="note" rows="10" cols="50"></textarea>
+      <br>
+      <button type="submit">Save Note</button>
+    </form>
+  
+    <h2>My Notes</h2>
+    <% if (user && user.notes.length > 0) { %>
+      <ul>
+        <% user.notes.forEach((note, index) => { %>
+          <li>
+            <%= note %>
+            <form action="/removeNote" method="POST" style="display: inline;">
+              <input type="hidden" name="noteIndex" value="<%= index %>">
+              <button type="submit">Remove</button>
+            </form>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <p>No notes found.</p>
+    <% } %>
+  </div>
 
   <script src="/script.js"></script>
 </body>

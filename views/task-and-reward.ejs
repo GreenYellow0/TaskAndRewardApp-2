@@ -9,6 +9,7 @@
 <body>
   <a href="/dashboard">Back to Dashboard</a>
   
+<div class="container-normal">
   <h2>Tasks</h2>
   <form id="taskForm" action="/saveTask" method="POST">
     <input type="text" name="task" placeholder="Enter a task" required>
@@ -48,6 +49,7 @@
   <% } else { %>
     <p>No rewards found.</p>
   <% } %>
+</div>
   
 
   <script src="/script.js"></script>
