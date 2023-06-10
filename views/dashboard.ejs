@@ -4,18 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/stylesheets/styles.css">
 </head>
 <body>
+
+
+
   <h1>Welcome, <%= user ? user.username : '' %>!</h1>
-  <a href="/logout">Logout</a>
   <% if (user) { %>
-    <a href="/profile/<%= user._id %>">Edit Profile</a>
-    <a href="/task-and-reward">Manage Tasks and Rewards</a> <!-- New button to redirect to task-and-reward page -->
-    <a href="/keyholder-portal">Keyholder Portal</a>
-
-
+    <button onclick="location.href='/profile/<%= user._id %>'">Edit Profile</button>
+    <button onclick="location.href='/task-and-reward'">Manage Tasks and Rewards</button>
+    <button onclick="location.href='/keyholder-portal'">Keyholder Portal</button>
   <% } %>
+  <button onclick="location.href='/logout'">Logout</button>
+
+
+  
+  
   <script src="/script.js"></script>
 </body>
 </html>

@@ -34,6 +34,7 @@ const User = mongoose.model('User', userSchema);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
