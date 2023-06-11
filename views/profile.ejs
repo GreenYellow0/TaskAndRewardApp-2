@@ -8,6 +8,8 @@
   <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
 </head>
 <body>
+  <%- include('header') %>
+  
   <h1>Edit Profile</h1>
   <form action="/profile/<%= user._id %>" method="POST">
     <label for="email">Email:</label>
@@ -21,6 +23,8 @@
   
     <button type="submit">Update Profile</button>
   </form>
+
+  <%- include('footer') %>
   <script src="/script.js"></script>
 </body>
 </html>

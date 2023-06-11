@@ -9,9 +9,11 @@
 </head>
 <body>
 
+  <%- include('header') %>
+
   <div class="container-normal">
     <h1>Welcome to the Keyholder Portal, <%= user ? user.username : '' %>!</h1>
-    <a href="/dashboard">Back to Dashboard</a>
+
   
     <form action="/saveNote" method="POST">
       <textarea name="note" rows="10" cols="50"></textarea>
@@ -36,6 +38,8 @@
       <p>No notes found.</p>
     <% } %>
   </div>
+
+  <%- include('footer') %>
 
   <script src="/script.js"></script>
 </body>

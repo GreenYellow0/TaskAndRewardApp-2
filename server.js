@@ -21,8 +21,10 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     email: { type: String, unique: true },
     tasks: [{ task: String, coins: Number }],
     rewards: [{ reward: String, cost: Number }],
-    notes: [String]  // New field for storing user notes
+    notes: [String], // New field for storing user notes
+    orgasms: [{ type: String }] // New field for storing orgasms
   });
+  
   
   
 
@@ -293,6 +295,32 @@ app.post('/removeNote', (req, res) => {
       res.redirect('/keyholder-portal');
     });
 });
+
+// Save orgasm route
+app.post('/saveOrgasm', (req, res) => {
+  const userId = req.user._id;
+  const { type } = req.body;
+
+  User.findByIdAndUpdate(userId, { $push: { orgasms: type } })
+    .then(() => {
+      res.redirect('/orgasm-tracker');
+    })
+    .catch(err => {
+      console.error(err);
+      res.redirect('/orgasm-tracker');
+    });
+});
+
+// Orgasm Tracker route
+app.get('/orgasm-tracker', (req, res) => {
+  // Assuming you have user information available in req.user
+  const user = req.user;
+  const orgasms = user.orgasms; // Retrieve the orgasm data for the user
+
+  res.render('orgasm-tracker', { user, orgasms });
+});
+
+
 
 
 

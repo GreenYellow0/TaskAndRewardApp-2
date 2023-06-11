@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orgasm Tracker</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
+</head>
+<body>
+
+  <% include('header') %>
+
+
+ <div class="container-normal">
+  <h1>Orgasm Tracker</h1>
+
+  <form action="/saveOrgasm" method="post">
+    <label for="type">Select orgasm type:</label>
+    <select name="type" id="type">
+      <option value="full">Full Orgasm</option>
+      <option value="caged">Caged Orgasm</option>
+      <option value="ruined">Ruined Orgasm</option>
+      <option value="wet-dream">Wet Dream</option>
+    </select>
+
+    <button type="submit">Save Orgasm</button>
+  </form>
+
+  <h2>All Orgasms:</h2>
+  <% if (orgasms.length > 0) { %>
+    <ul>
+      <% orgasms.forEach((orgasm) => { %>
+        <li><%= orgasm %></li>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p>No orgasms recorded yet.</p>
+  <% } %>
+ </div>
+
+
+  <% include('footer') %>
+  
+
+  <script src="/script.js"></script>
+</body>
+</html>

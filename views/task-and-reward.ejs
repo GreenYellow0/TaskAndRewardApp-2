@@ -8,7 +8,9 @@
   <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
 </head>
 <body>
-  <a href="/dashboard">Back to Dashboard</a>
+
+  <%- include('header') %>
+
   
 <div class="container-normal">
   <h2>Tasks</h2>
@@ -51,6 +53,7 @@
     <p>No rewards found.</p>
   <% } %>
 </div>
+<%- include('footer') %>
   
 
   <script src="/script.js"></script>
