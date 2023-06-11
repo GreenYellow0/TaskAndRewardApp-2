@@ -51,19 +51,26 @@
       <button type="submit">Save Orgasm</button>
     </form>
 
-    <h2>All Orgasms:</h2>
-    <% if (user) { %>
-      <a href="/orgasm-log">View All Orgasms</a> <!-- Add the link to the orgasm-log page -->
-    <% } %>
+
+
+  <h2>All Orgasms:</h2>
+  <% if (user) { %>
+    <a href="/orgasm-log" class="button-orgasm-log ">View All Orgasms</a> <!-- Add the link to the orgasm-log page -->
+  <% } %>
+  
+</div>
+<br>
     
-    <!-- Add the dropdown menu and button for time range selection -->
-    <select id="timeRange">
-      <option value="week">Week Progress</option>
-      <option value="month">Month Progress</option>
-      <option value="year">Year Progress</option>
-    </select>
-    <button id="generateChartBtn" onclick="generateChart()">Generate Chart</button>
-  </div>
+<div class="container-normal">
+      <!-- Add the dropdown menu and button for time range selection -->
+      <select id="timeRange">
+        <option value="week">Week Progress</option>
+        <option value="month">Month Progress</option>
+        <option value="year">Year Progress</option>
+      </select>
+      <button id="generateChartBtn" onclick="generateChart()">Generate Chart</button>
+    </div>
+</div>
 
   <!-- Add the container for the charts -->
   <div class="charts-container">

@@ -7,6 +7,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const passportLocalMongoose = require('passport-local-mongoose');
 const flash = require('connect-flash');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 
  

@@ -34,8 +34,18 @@ input[type="email"] {
 }
 
 button[type="submit"] {
-  padding: 8px 20px;
+  background-color: #0088ff;
+  border: none;
+  color: white;
+  padding: 6px 16px; /* Adjust the padding values to make the button smaller */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px; /* Adjust the font size to make the button smaller */
+  margin: 4px 2px;
+  cursor: pointer;
 }
+
 
 
 
@@ -79,3 +89,15 @@ button[type="submit"] {
 
     /**/
 
+      .button-orgasm-log {
+        background-color: #0088ff;
+        border: none;
+        color: white;
+        padding: 6px 16px; /* Adjust the padding values to make the button smaller */
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px; /* Adjust the font size to make the button smaller */
+        margin: 4px 2px;
+        cursor: pointer;
+      }
