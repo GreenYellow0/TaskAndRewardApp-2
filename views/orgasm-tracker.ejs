@@ -1,48 +1,198 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Orgasm Tracker</title>
   <link rel="stylesheet" href="/stylesheets/styles.css">
-  <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <style>
+    .charts-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 950px) {
+      .charts-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .chart-container {
+      width: 48%;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 950px) {
+      .chart-container {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
+  <%- include('header') %>
 
-  <% include('header') %>
+  <div class="container-normal">
+    <h1>Orgasm Tracker</h1>
 
+    <form action="/saveOrgasm" method="post">
+      <label for="type">Select orgasm type:</label>
+      <select name="type" id="type">
+        <option value="full">Full Orgasm</option>
+        <option value="caged">Caged Orgasm</option>
+        <option value="ruined">Ruined Orgasm</option>
+        <option value="wet-dream">Wet Dream</option>
+      </select>
 
- <div class="container-normal">
-  <h1>Orgasm Tracker</h1>
+      <button type="submit">Save Orgasm</button>
+    </form>
 
-  <form action="/saveOrgasm" method="post">
-    <label for="type">Select orgasm type:</label>
-    <select name="type" id="type">
-      <option value="full">Full Orgasm</option>
-      <option value="caged">Caged Orgasm</option>
-      <option value="ruined">Ruined Orgasm</option>
-      <option value="wet-dream">Wet Dream</option>
+    <h2>All Orgasms:</h2>
+    <% if (user) { %>
+      <a href="/orgasm-log">View All Orgasms</a> <!-- Add the link to the orgasm-log page -->
+    <% } %>
+    
+    <!-- Add the dropdown menu and button for time range selection -->
+    <select id="timeRange">
+      <option value="week">Week Progress</option>
+      <option value="month">Month Progress</option>
+      <option value="year">Year Progress</option>
     </select>
+    <button id="generateChartBtn" onclick="generateChart()">Generate Chart</button>
+  </div>
 
-    <button type="submit">Save Orgasm</button>
-  </form>
+  <!-- Add the container for the charts -->
+  <div class="charts-container">
+    <div class="chart-container">
+      <canvas id="barChart"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="doughnutChart"></canvas>
+    </div>
+  </div>
 
-  <h2>All Orgasms:</h2>
-  <% if (orgasms.length > 0) { %>
-    <ul>
-      <% orgasms.forEach((orgasm) => { %>
-        <li><%= orgasm %></li>
-      <% }); %>
-    </ul>
-  <% } else { %>
-    <p>No orgasms recorded yet.</p>
-  <% } %>
- </div>
+  <%- include('footer') %>
 
+  <script>
+    // Retrieve the orgasm data from the server-side variable
+    const orgasmsData = JSON.parse('<%- JSON.stringify(orgasms) %>');
 
-  <% include('footer') %>
-  
+    // Prepare the data for the doughnut chart
+    const orgasmTypes = ['full', 'ruined', 'caged', 'wet-dream'];
+    const labels = orgasmTypes;
+    const orgasmCounts = orgasmTypes.map(type => orgasmsData.filter(orgasm => orgasm.type === type).length);
 
-  <script src="/script.js"></script>
+    new Chart("doughnutChart", {
+      type: "doughnut",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Orgasm Count",
+          data: orgasmCounts,
+          backgroundColor: [
+            "#b91d47",
+            "#00aba9",
+            "#2b5797",
+            "#e8c3b9"
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        title: {
+          display: true,
+          text: "Orgasm Count by Type"
+        }
+      }
+    });
+
+    // Generate the bar chart based on the selected time range
+    function generateChart() {
+      const selectedRange = document.getElementById("timeRange").value;
+      let chartTitle = "";
+      let labels = [];
+      let data = [];
+
+      if (selectedRange === "week") {
+        chartTitle = "Orgasm Count for the Week";
+        labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        data = [0, 0, 0, 0, 0, 0, 0]; // Initialize with zero counts for each day
+
+        // Calculate the orgasm counts for each day of the week
+        orgasmsData.forEach((orgasm) => {
+          const date = new Date(orgasm.date);
+          const dayOfWeek = (date.getDay() + 6) % 7; // Adjust the day index to start from Monday
+          data[dayOfWeek]++;
+        });
+      } else if (selectedRange === "month") {
+        chartTitle = "Orgasm Count for the Month";
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth(); // 0: January, 1: February, ..., 11: December
+        const totalDays = new Date(currentDate.getFullYear(), currentMonth + 1, 0).getDate(); // Total days in the current month
+
+        labels = Array.from({ length: totalDays }, (_, i) => (i + 1).toString());
+        data = Array.from({ length: totalDays }, () => 0); // Initialize with zero counts for each day
+
+        // Calculate the orgasm counts for each day of the month
+        orgasmsData.forEach((orgasm) => {
+          const date = new Date(orgasm.date);
+          if (date.getMonth() === currentMonth) {
+            const dayOfMonth = date.getDate(); // 1, 2, ..., 31
+            data[dayOfMonth - 1]++;
+          }
+        });
+      } else if (selectedRange === "year") {
+        chartTitle = "Orgasm Count for the Year";
+        labels = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+        data = Array.from({ length: 12 }, () => 0); // Initialize with zero counts for each month
+
+        // Calculate the orgasm counts for each month of the year
+        orgasmsData.forEach((orgasm) => {
+          const date = new Date(orgasm.date);
+          const month = date.getMonth(); // 0: January, 1: February, ..., 11: December
+          data[month]++;
+        });
+      }
+
+      new Chart("barChart", {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Orgasm Count",
+            data: data,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              stepSize: 1
+            }
+          },
+          title: {
+            display: true,
+            text: chartTitle
+          }
+        }
+      });
+    }
+
+    // Call the generateChart function with the default value "week" when the page finishes loading
+    document.addEventListener("DOMContentLoaded", function() {
+      generateChart();
+    });
+  </script>
 </body>
 </html>

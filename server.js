@@ -15,15 +15,22 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
 
+  const orgasmSchema = new mongoose.Schema({
+    type: String,
+    date: { type: Date, default: Date.now },
+    time: { type: Date, default: () => Date.now() }
+  });
+  
   const userSchema = new mongoose.Schema({
     username: { type: String, unique: true },
     password: String,
     email: { type: String, unique: true },
     tasks: [{ task: String, coins: Number }],
     rewards: [{ reward: String, cost: Number }],
-    notes: [String], // New field for storing user notes
-    orgasms: [{ type: String }] // New field for storing orgasms
+    notes: [String],
+    orgasms: [orgasmSchema]
   });
+  
   
   
   
@@ -296,20 +303,26 @@ app.post('/removeNote', (req, res) => {
     });
 });
 
-// Save orgasm route
 app.post('/saveOrgasm', (req, res) => {
   const userId = req.user._id;
   const { type } = req.body;
+  const date = new Date(); // Get the current date and time
 
-  User.findByIdAndUpdate(userId, { $push: { orgasms: type } })
-    .then(() => {
+  User.findByIdAndUpdate(
+    userId,
+    { $addToSet: { orgasms: { type, date, time: date.toISOString() } } },
+    { new: true }
+  )
+    .then((updatedUser) => {
       res.redirect('/orgasm-tracker');
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       res.redirect('/orgasm-tracker');
     });
 });
+
+
 
 // Orgasm Tracker route
 app.get('/orgasm-tracker', (req, res) => {
@@ -321,7 +334,77 @@ app.get('/orgasm-tracker', (req, res) => {
 });
 
 
+app.get('/getChartData', (req, res) => {
+  const userId = req.user._id;
+  const timeRange = req.query.timeRange;
 
+  // Write code to retrieve the data based on the time range
+  // For example:
+  User.findById(userId)
+    .then((user) => {
+      const orgasms = user.orgasms;
+
+      // Get the start and end date for the selected time range
+      let startDate, endDate;
+      if (timeRange === 'week') {
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7);
+        endDate = new Date();
+      } else if (timeRange === 'month') {
+        startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+        endDate = new Date();
+      } else if (timeRange === 'year') {
+        startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1);
+        endDate = new Date();
+      }
+
+      // Filter the orgasms based on the selected time range
+      const filteredOrgasms = orgasms.filter((orgasm) => {
+        const orgasmDate = new Date(orgasm.date);
+        return orgasmDate >= startDate && orgasmDate <= endDate;
+      });
+
+      // Group the orgasms by date and count the number of orgasms for each date
+      const chartData = {};
+      filteredOrgasms.forEach((orgasm) => {
+        const dateStr = orgasm.date.toISOString().split('T')[0];
+        if (chartData[dateStr]) {
+          chartData[dateStr]++;
+        } else {
+          chartData[dateStr] = 1;
+        }
+      });
+
+      // Prepare the data in the required format for the chart
+      const labels = Object.keys(chartData);
+      const orgasmCounts = Object.values(chartData);
+
+      res.json({ labels, orgasmCounts });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve chart data' });
+    });
+});
+
+
+// Handle GET request for '/orgasm-log'
+app.get('/orgasm-log', (req, res) => {
+  const userId = req.user._id;
+
+  // Retrieve the logged-in user's orgasms from the database
+  User.findById(userId)
+    .then((user) => {
+      const orgasms = user.orgasms;
+      res.render('orgasm-log', { user, orgasms }); // Pass the 'user' variable to the view
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve orgasms' });
+    });
+});
 
 
 
