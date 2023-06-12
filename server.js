@@ -407,6 +407,12 @@ app.get('/orgasm-log', (req, res) => {
     });
 });
 
+app.get('/help-doc', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+  res.render('help-doc', { user });
+});
+
+
 
 
 

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Doc</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <style>
+    .accordion {
+      background-color: #76c6ff;
+      color: #444;
+      cursor: pointer;
+      padding: 18px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+      transition: 0.4s;
+    }
+
+    .active, .accordion:hover {
+      background-color: #0011fb;
+      color: white;
+    }
+
+    .panel {
+      padding: 0 18px;
+      background-color: white;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+  <%- include('header') %>
+
+  <div class="container-normal">
+    <h1>Help And Information About ChastityLogHub!</h1>
+</div>
+
+
+    <h2>FAQ</h2>
+
+    <button class="accordion">What is ChastityLogHub?</button>
+    <div class="panel">
+      <p>
+        ChastityLogHub is a sophisticated website designed exclusively for individuals interested in chastity. <br>
+        It offers a range of features to enhance the chastity experience. <br> <br> 
+
+        One of the key features is an orgasm tracker, allowing users to meticulously record and categorize their orgasms as full, ruined, caged, or wet dreams. <br>
+        If you are committed to wearing chastity full time, the frequency of recorded orgasms may be relatively low. <br>
+        However, for keyholders, this feature provides an opportunity to proudly document their own orgasms. <br><br> 
+
+        In addition to the existing features, we are constantly developing new functionalities to further enhance the user experience. <br>
+        For instance, we are currently working on a cage alarm feature, tailored for individuals actively practicing chastity. <br>
+        This feature enables users to track their progress by recording the number of cage alarms they experience. <br><br> 
+
+        Furthermore, ChastityLogHub offers a dedicated keyholder portal, which currently includes a note section. <br>
+        This feature allows keyholders to jot down important details about their lockees or create task lists for efficient management. <br><br> 
+
+        To stay updated on the latest developments and new features, users can refer to the "news" section on our website. <br>
+        We are committed to providing a comprehensive and user-friendly platform for the chastity community. <br>
+      </p>
+    </div>
+
+    <button class="accordion">What is the Keyholder Portal?</button>
+    <div class="panel">
+      <p>
+        The keyholder portal serves as a secure and exclusive platform for keyholders within our community. <br>
+        Currently accessible to all users, this feature allows keyholders to maintain organized and confidential records by creating personal notes.<br><br>
+
+        Keyholders can utilize this portal to store essential information about their lockees, ensuring that important details are readily available whenever needed. <br>
+        It serves as a convenient space to jot down key points, preferences, or any pertinent information specific to each lockee. <br>
+        Moreover, the portal can be utilized when creating locks, allowing keyholders to maintain a tidy and structured approach to their management.<br><br>
+        
+        While primarily designed for keyholders, the keyholder portal also extends its functionality to lockees who wish to utilize the note-taking feature. <br>
+        Rest assured that all notes created within the portal remain completely private, as no other individuals have access to view or read them.<br><br>
+        
+        We prioritize the privacy and confidentiality of our users, ensuring that the keyholder portal offers a secure and exclusive space for individuals to manage their personal records with peace of mind.
+      </p>
+    </div>
+
+    <button class="accordion">What is the Orgasm Tracker?</button>
+    <div class="panel">
+      <p>
+        The Orgasm Tracker is a valuable tool available to users, regardless of their involvement in chastity. <br>
+        It allows individuals to conveniently record and monitor their orgasms.<br><br>
+
+        When using the tracker, users can easily add and mark the occurrence of each orgasm they have. <br>
+        There are four distinct types of orgasms that can be recorded:<br><br>
+        
+        Full: Signifying a complete and satisfying orgasm.<br>
+        Ruined: Indicating an orgasm that did not reach its full intensity or potential.<br>
+        Caged: Specifically for individuals practicing chastity, denoting orgasms experienced while wearing a chastity device.<br>
+        Wet Dreams: Referring to spontaneous orgasms that occur during sleep, particularly relevant for those engaged in chastity.<br><br>
+
+        To ensure clarity and organization, the Orgasm Tracker offers two distinct charts that display the recorded data in a visually appealing manner. <br>
+        Additionally, users can access an orgasm log, which provides a comprehensive overview of their recorded orgasms, including the date, time, and type of each occurrence.<br><br>
+        
+        By utilizing the Orgasm Tracker, users can effectively monitor and analyze their orgasms, promoting a more comprehensive understanding of their personal journey.<br>
+      </p>
+    </div>
+
+
+  <%- include('footer') %>
+  
+  <script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+      });
+    }
+  </script>
+  
+</body>
+</html>
