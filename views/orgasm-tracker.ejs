@@ -87,12 +87,12 @@
   <script>
     // Retrieve the orgasm data from the server-side variable
     const orgasmsData = JSON.parse('<%- JSON.stringify(orgasms) %>');
-
+  
     // Prepare the data for the doughnut chart
     const orgasmTypes = ['full', 'ruined', 'caged', 'wet-dream'];
     const labels = orgasmTypes;
     const orgasmCounts = orgasmTypes.map(type => orgasmsData.filter(orgasm => orgasm.type === type).length);
-
+  
     new Chart("doughnutChart", {
       type: "doughnut",
       data: {
@@ -116,23 +116,51 @@
         }
       }
     });
-
-    // Generate the bar chart based on the selected time range
+  
+    let barChart;
+    const barChartOptions = {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          stepSize: 1
+        }
+      },
+      title: {
+        display: true,
+        text: ""
+      }
+    };
+  
     function generateChart() {
       const selectedRange = document.getElementById("timeRange").value;
       let chartTitle = "";
       let labels = [];
       let data = [];
-
+  
       if (selectedRange === "week") {
         chartTitle = "Orgasm Count for the Week";
         labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
         data = [0, 0, 0, 0, 0, 0, 0]; // Initialize with zero counts for each day
-
+  
         // Calculate the orgasm counts for each day of the week
         orgasmsData.forEach((orgasm) => {
           const date = new Date(orgasm.date);
           const dayOfWeek = (date.getDay() + 6) % 7; // Adjust the day index to start from Monday
+  
+          // Exclude future Mondays
+          const today = new Date();
+          const currentDay = today.getDay();
+          const currentHour = today.getHours();
+          if (currentDay === 1 && currentHour < 6 && dayOfWeek === 0) {
+            return;
+          }
+  
+          // Exclude Sundays on Mondays
+          if (currentDay === 1 && dayOfWeek === 6) {
+            return;
+          }
+  
           data[dayOfWeek]++;
         });
       } else if (selectedRange === "month") {
@@ -140,10 +168,10 @@
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth(); // 0: January, 1: February, ..., 11: December
         const totalDays = new Date(currentDate.getFullYear(), currentMonth + 1, 0).getDate(); // Total days in the current month
-
+  
         labels = Array.from({ length: totalDays }, (_, i) => (i + 1).toString());
         data = Array.from({ length: totalDays }, () => 0); // Initialize with zero counts for each day
-
+  
         // Calculate the orgasm counts for each day of the month
         orgasmsData.forEach((orgasm) => {
           const date = new Date(orgasm.date);
@@ -159,7 +187,7 @@
           "July", "August", "September", "October", "November", "December"
         ];
         data = Array.from({ length: 12 }, () => 0); // Initialize with zero counts for each month
-
+  
         // Calculate the orgasm counts for each month of the year
         orgasmsData.forEach((orgasm) => {
           const date = new Date(orgasm.date);
@@ -167,8 +195,14 @@
           data[month]++;
         });
       }
-
-      new Chart("barChart", {
+  
+      // Remove any existing event listeners
+      if (barChart) {
+        barChart.destroy();
+        document.getElementById("barChart").removeEventListener("mousemove", handleChartHover);
+      }
+  
+      barChart = new Chart("barChart", {
         type: "bar",
         data: {
           labels: labels,
@@ -180,26 +214,21 @@
             borderWidth: 1
           }]
         },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              stepSize: 1
-            }
-          },
-          title: {
-            display: true,
-            text: chartTitle
-          }
-        }
+        options: barChartOptions
       });
+  
+      document.getElementById("barChart").addEventListener("mousemove", handleChartHover);
     }
-
-    // Call the generateChart function with the default value "week" when the page finishes loading
+  
+    function handleChartHover(event) {
+      // Code to handle the chart hover event
+      // ...
+    }
+  
     document.addEventListener("DOMContentLoaded", function() {
       generateChart();
     });
   </script>
+  
 </body>
 </html>
