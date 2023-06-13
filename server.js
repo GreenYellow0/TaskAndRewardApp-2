@@ -16,10 +16,17 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
 
+
+
   const orgasmSchema = new mongoose.Schema({
     type: String,
     date: { type: Date, default: Date.now },
     time: { type: Date, default: () => Date.now() }
+  });
+
+  const cageAlarmSchema = new mongoose.Schema({
+    activated: { type: Boolean, default: false },
+    time: { type: Date, default: null }
   });
   
   const userSchema = new mongoose.Schema({
@@ -29,9 +36,9 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     tasks: [{ task: String, coins: Number }],
     rewards: [{ reward: String, cost: Number }],
     notes: [String],
-    orgasms: [orgasmSchema]
+    orgasms: [orgasmSchema],
+    cageAlarms: [cageAlarmSchema] // Changed field name to 'cageAlarms'
   });
-  
   
   
   
@@ -416,6 +423,103 @@ app.get('/help-doc', (req, res) => {
 
 
 
+
+
+app.post('/saveCageAlarm', (req, res) => {
+  const userId = req.user._id;
+  const date = new Date(); // Get the current date and time
+
+  User.findByIdAndUpdate(
+    userId,
+    { $push: { cageAlarms: { timestamp: date } } }, // Change 'time' to 'timestamp'
+    { new: true }
+  )
+    .then((updatedUser) => {
+      res.redirect('/cage-alarm-tracker');
+    })
+    .catch((err) => {
+      console.error(err);
+      res.redirect('/cage-alarm-tracker');
+    });
+});
+
+app.get('/cage-alarm-log', (req, res) => {
+  const userId = req.user._id;
+
+  User.findById(userId)
+  .select('cageAlarms') // Change 'cageAlarm' to 'cageAlarms'
+  .then((user) => {
+    const cageAlarms = user.cageAlarms; // Update 'cageAlarm' to 'cageAlarms'
+    res.render('cage-alarm-log', { user: req.user, cageAlarms });
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('An error occurred');
+  });
+
+});
+
+app.get('/getCageAlarmChartData', (req, res) => {
+  const userId = req.user._id;
+  const timeRange = req.query.timeRange;
+
+  User.findById(userId)
+    .then((user) => {
+      const cageAlarms = user.cageAlarms; // Update 'cageAlarm' to 'cageAlarms'
+
+      let startDate, endDate;
+      if (timeRange === 'week') {
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7);
+        endDate = new Date();
+      } else if (timeRange === 'month') {
+        startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+        endDate = new Date();
+      } else if (timeRange === 'year') {
+        startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1);
+        endDate = new Date();
+      }
+
+      const filteredCageAlarms = cageAlarms.filter((alarm) => {
+        const alarmDate = new Date(alarm.timestamp);
+        return alarmDate >= startDate && alarmDate <= endDate;
+      });
+
+      const chartData = {};
+      filteredCageAlarms.forEach((alarm) => {
+        const dateStr = alarm.timestamp.toISOString().split('T')[0];
+        if (chartData[dateStr]) {
+          chartData[dateStr]++;
+        } else {
+          chartData[dateStr] = 1;
+        }
+      });
+
+      const labels = Object.keys(chartData);
+      const alarmCounts = Object.values(chartData);
+
+      res.json({ labels, alarmCounts });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve chart data' });
+    });
+});
+
+
+app.get('/cage-alarm-tracker', (req, res) => {
+  User.findById(req.user._id)
+    .select('cageAlarms')
+    .then((user) => {
+      res.render('cage-alarm-tracker', { user: req.user, cageAlarms: user.cageAlarms });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('An error occurred');
+    });
+});
 
 
 // Start the server
