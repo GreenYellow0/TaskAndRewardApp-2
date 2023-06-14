@@ -47,6 +47,31 @@ button[type="submit"] {
   cursor: pointer;
 }
 
+button.save-button {
+  background-color: #0088ff;
+  border: none;
+  color: white;
+  padding: 6px 16px; /* Adjust the padding values to make the button smaller */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px; /* Adjust the font size to make the button smaller */
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+a.tracker-link {
+  background-color: #0088ff;
+  border: none;
+  color: white;
+  padding: 6px 16px; /* Adjust the padding values to make the button smaller */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px; /* Adjust the font size to make the button smaller */
+  margin: 4px 2px;
+  cursor: pointer;
+}
 
 
 

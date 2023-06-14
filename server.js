@@ -24,9 +24,11 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     time: { type: Date, default: () => Date.now() }
   });
 
+
   const cageAlarmSchema = new mongoose.Schema({
-    activated: { type: Boolean, default: false },
-    timestamp: { type: Date, default: null } // Change 'time' to 'timestamp'
+    type: String,
+    date: { type: Date, default: Date.now },
+    time: Date
   });
   
   
@@ -38,7 +40,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     rewards: [{ reward: String, cost: Number }],
     notes: [String],
     orgasms: [orgasmSchema],
-    cageAlarms: [cageAlarmSchema] // Changed field name to 'cageAlarms'
+    cageAlarms: [cageAlarmSchema] // Add the cageAlarms field to the user schema
   });
   
   
@@ -420,6 +422,126 @@ app.get('/help-doc', (req, res) => {
   res.render('help-doc', { user });
 });
 
+
+
+
+app.post('/saveCageAlarm', (req, res) => {
+  const userId = req.user._id;
+  const date = new Date();
+
+  User.findById(userId)
+    .then((user) => {
+      user.cageAlarms.push({ date: date, time: date.toISOString() });
+
+      user.save()
+        .then((updatedUser) => {
+          res.json({ success: true });
+        })
+        .catch((saveError) => {
+          console.error('Error saving cage alarm:', saveError);
+          res.status(500).json({ success: false, error: 'Failed to save the cage alarm' });
+        });
+    })
+    .catch((findError) => {
+      console.error('Error finding user:', findError);
+      res.status(500).json({ success: false, error: 'Failed to find the user' });
+    });
+});
+
+
+
+
+
+
+app.get('/cage-alarm-tracker', (req, res) => {
+  const userId = req.user._id;
+
+  User.findById(userId)
+    .then((user) => {
+      const cageAlarms = user.cageAlarms;
+      res.render('cage-alarm-tracker', { user, cageAlarms });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve cage alarms' });
+    });
+});
+
+
+
+
+
+app.get('/getChartData', (req, res) => {
+  const userId = req.user._id;
+  const timeRange = req.query.timeRange;
+
+  User.findById(userId)
+    .then((user) => {
+      const cageAlarms = user.cageAlarms;
+
+      // Get the start and end date for the selected time range
+      let startDate, endDate;
+      if (timeRange === 'week') {
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7);
+        endDate = new Date();
+      } else if (timeRange === 'month') {
+        startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+        endDate = new Date();
+      } else if (timeRange === 'year') {
+        startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1);
+        endDate = new Date();
+      }
+
+      // Filter the cage alarms based on the selected time range
+      const filteredAlarms = cageAlarms.filter((alarm) => {
+        const alarmDate = new Date(alarm.date);
+        return alarmDate >= startDate && alarmDate <= endDate;
+      });
+
+      // Group the alarms by date and count the number of alarms for each date
+      const chartData = {};
+      filteredAlarms.forEach((alarm) => {
+        const dateStr = alarm.date.toISOString().split('T')[0];
+        if (chartData[dateStr]) {
+          chartData[dateStr]++;
+        } else {
+          chartData[dateStr] = 1;
+        }
+      });
+
+      // Prepare the data in the required format for the chart
+      const labels = Object.keys(chartData);
+      const alarmCounts = Object.values(chartData);
+
+      res.json({ labels, alarmCounts });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve chart data' });
+    });
+});
+
+
+
+
+
+
+app.get('/cage-alarm-log', (req, res) => {
+  const userId = req.user._id;
+
+  User.findById(userId)
+    .then((user) => {
+      const cageAlarms = user.cageAlarms;
+      res.render('cage-alarm-log', { user, cageAlarms });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to retrieve cage alarms' });
+    });
+});
 
 
 
