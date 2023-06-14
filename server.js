@@ -40,7 +40,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     rewards: [{ reward: String, cost: Number }],
     notes: [String],
     orgasms: [orgasmSchema],
-    cageAlarms: [cageAlarmSchema] // Add the cageAlarms field to the user schema
+    cageAlarms: [cageAlarmSchema]
   });
   
   
@@ -542,6 +542,116 @@ app.get('/cage-alarm-log', (req, res) => {
       res.status(500).json({ error: 'Failed to retrieve cage alarms' });
     });
 });
+
+
+
+/////////////////////////////////////////
+
+// Task creation route
+app.get('/create-task', (req, res) => {
+  const user = req.user;
+  res.render('create-task', { user });
+});
+
+app.post('/create-task', (req, res) => {
+  const { task, coins } = req.body;
+  const user = req.user;
+  user.tasks.push({ task, coins });
+  user.save();
+  res.redirect('/dashboard');
+});
+
+// Reward creation route
+app.get('/create-reward', (req, res) => {
+  const user = req.user;
+  res.render('create-reward', { user });
+});
+
+app.post('/create-reward', (req, res) => {
+  const { reward, cost } = req.body;
+  const user = req.user;
+  user.rewards.push({ reward, cost });
+  user.save();
+  res.redirect('/dashboard');
+});
+
+// Shared page route
+app.get('/shared/:userId', (req, res) => {
+  const userId = req.params.userId;
+  User.findById(userId, (err, user) => {
+    if (err || !user) {
+      res.render('shared', { error: 'Invalid link' });
+    } else {
+      res.render('shared', { user });
+    }
+  });
+});
+
+// Task completion route
+app.post('/complete-task/:userId/:taskId', (req, res) => {
+  const { userId, taskId } = req.params;
+  User.findById(userId, (err, user) => {
+    if (err || !user) {
+      res.redirect('/');
+    } else {
+      const task = user.tasks.id(taskId);
+      if (task) {
+        // Add coins to user's account
+        user.coins += task.coins;
+        user.save();
+        // Remove the completed task
+        task.remove();
+      }
+      res.redirect(`/shared/${userId}`);
+    }
+  });
+});
+
+// Reward purchase route
+app.post('/buy-reward/:userId/:rewardId', (req, res) => {
+  const { userId, rewardId } = req.params;
+  User.findById(userId, (err, user) => {
+    if (err || !user) {
+      res.redirect('/');
+    } else {
+      const reward = user.rewards.id(rewardId);
+      if (reward && user.coins >= reward.cost) {
+        // Deduct coins from user's account
+        user.coins -= reward.cost;
+        user.save();
+        // Remove the purchased reward
+        reward.remove();
+      }
+      res.redirect(`/shared/${userId}`);
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

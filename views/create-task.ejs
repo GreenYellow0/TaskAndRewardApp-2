@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Tasks</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
+</head>
+<body>
+
+  <%- include('header') %>
+
+  <h1>Create Task</h1>
+  <form action="/create-task" method="POST">
+    <label for="task">Task:</label>
+    <input type="text" id="task" name="task" required><br>
+    <label for="coins">Coins:</label>
+    <input type="number" id="coins" name="coins" required><br>
+    <button type="submit">Create</button>
+  </form>
+
+
+
+ <%- include('footer') %>
+<script src="/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shared</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
+</head>
+<body>
+
+  <%- include('header') %>
+
+  <h1>Shared Page</h1>
+  <% if (error) { %>
+    <p><%= error %></p>
+  <% } else { %>
+    <h2>Tasks</h2>
+    <% if (user.tasks.length > 0) { %>
+      <ul>
+        <% user.tasks.forEach(task => { %>
+          <li>
+            <%= task.task %> - <%= task.coins %> coins
+            <form action="/complete-task/<%= user._id %>/<%= task._id %>" method="POST">
+              <button type="submit">Complete Task</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>No tasks available</p>
+    <% } %>
+    <h2>Rewards</h2>
+    <% if (user.rewards.length > 0) { %>
+      <ul>
+        <% user.rewards.forEach(reward => { %>
+          <li>
+            <%= reward.reward %> - <%= reward.cost %> coins
+            <% if (user.coins >= reward.cost) { %>
+              <form action="/buy-reward/<%= user._id %>/<%= reward._id %>" method="POST">
+                <button type="submit">Buy Reward</button>
+              </form>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>No rewards available</p>
+    <% } %>
+  <% } %>
+
+ <%- include('footer') %>
+<script src="/script.js"></script>
+</body>
+</html>
