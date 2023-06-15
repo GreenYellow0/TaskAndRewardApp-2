@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Reward List</title>
+</head>
+<body>
+  <h1>Create Reward List</h1>
+  <form action="/save-reward-list" method="POST">
+    <label for="rewardListName">Reward List Name:</label>
+    <input type="text" id="rewardListName" name="rewardListName" required><br>
+    
+    <!-- Add input fields for rewards and costs dynamically using JavaScript -->
+    <div id="rewardsContainer">
+      <div id="reward1">
+        <label for="reward1Name">Reward 1:</label>
+        <input type="text" id="reward1Name" name="reward1Name" required>
+        <label for="reward1Cost">Coins:</label>
+        <input type="number" id="reward1Cost" name="reward1Cost" required>
+      </div>
+    </div>
+    
+    <input type="hidden" id="rewardCount" name="rewardCount" value="1">
+    
+    <button type="button" onclick="addRewardField()">Add Reward</button>
+    <button type="submit">Create</button>
+  </form>
+
+  <script>
+    let rewardCounter = 1;
+
+    function addRewardField() {
+      rewardCounter++;
+      const rewardsContainer = document.getElementById('rewardsContainer');
+
+      const rewardDiv = document.createElement('div');
+      rewardDiv.id = 'reward' + rewardCounter;
+
+      const rewardLabel = document.createElement('label');
+      rewardLabel.textContent = 'Reward ' + rewardCounter + ':';
+
+      const rewardInput = document.createElement('input');
+      rewardInput.type = 'text';
+      rewardInput.id = 'reward' + rewardCounter + 'Name';
+      rewardInput.name = 'reward' + rewardCounter + 'Name';
+      rewardInput.required = true;
+
+      const costLabel = document.createElement('label');
+      costLabel.textContent = 'Coins:';
+
+      const costInput = document.createElement('input');
+      costInput.type = 'number';
+      costInput.id = 'reward' + rewardCounter + 'Cost';
+      costInput.name = 'reward' + rewardCounter + 'Cost';
+      costInput.required = true;
+
+      rewardDiv.appendChild(rewardLabel);
+      rewardDiv.appendChild(rewardInput);
+      rewardDiv.appendChild(costLabel);
+      rewardDiv.appendChild(costInput);
+
+      rewardsContainer.appendChild(rewardDiv);
+      
+      // Update the value of the hidden rewardCount input field
+      const rewardCountInput = document.getElementById("rewardCount");
+      rewardCountInput.value = rewardCounter;
+    }
+  </script>
+</body>
+</html>

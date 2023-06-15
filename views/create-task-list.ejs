@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Task List</title>
+</head>
+<body>
+  <h1>Create Task List</h1>
+  <form action="/save-task-list" method="POST">
+    <label for="taskListName">Task List Name:</label>
+    <input type="text" id="taskListName" name="taskListName" required><br>
+    
+<!-- Add input fields for tasks and coins dynamically using JavaScript -->
+<div id="tasksContainer">
+    <div id="task1">
+      <label for="task1Name">Task 1:</label>
+      <input type="text" id="task1Name" name="task1Name" required>
+      <label for="task1Coins">Coins:</label>
+      <input type="number" id="task1Coins" name="task1Coins" required>
+    </div>
+  </div>
+  
+  <input type="hidden" id="taskCount" name="taskCount" value="1">
+  
+  <button type="button" onclick="addTask()">Add Task</button><br><br>
+  <button type="submit">Save Task List</button>
+  
+
+  <script>
+let taskCounter = 1;
+
+function addTask() {
+  taskCounter++;
+  const container = document.getElementById("tasksContainer");
+
+  const taskDiv = document.createElement("div");
+  taskDiv.id = "task" + taskCounter;
+
+  const taskLabel = document.createElement("label");
+  taskLabel.textContent = "Task " + taskCounter + ":";
+
+  const taskInput = document.createElement("input");
+  taskInput.type = "text";
+  taskInput.id = "task" + taskCounter + "Name";
+  taskInput.name = "task" + taskCounter + "Name";
+  taskInput.required = true;
+
+  const coinsLabel = document.createElement("label");
+  coinsLabel.textContent = "Coins:";
+
+  const coinsInput = document.createElement("input");
+  coinsInput.type = "number";
+  coinsInput.id = "task" + taskCounter + "Coins";
+  coinsInput.name = "task" + taskCounter + "Coins";
+  coinsInput.required = true;
+
+  taskDiv.appendChild(taskLabel);
+  taskDiv.appendChild(taskInput);
+  taskDiv.appendChild(coinsLabel);
+  taskDiv.appendChild(coinsInput);
+
+  container.appendChild(taskDiv);
+
+  // Update the value of the hidden taskCount input field
+  const taskCountInput = document.getElementById("taskCount");
+  taskCountInput.value = taskCounter;
+}
+
+  </script>
+</body>
+</html>

@@ -40,8 +40,12 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     rewards: [{ reward: String, cost: Number }],
     notes: [String],
     orgasms: [orgasmSchema],
-    cageAlarms: [cageAlarmSchema]
+    cageAlarms: [cageAlarmSchema],
+    taskLists: [{ name: String, tasks: [{ task: String, coins: Number }] }],
+    rewardLists: [{ name: String, rewards: [{ reward: String, cost: Number }] }],
+    coins: Number
   });
+  
   
   
   
@@ -183,87 +187,6 @@ app.post('/profile/:id', (req, res) => {
     });
 });
 
-
-// Save task route
-app.post('/saveTask', (req, res) => {
-  const { task, coins } = req.body;
-  const userId = req.user._id;
-
-  // Create a new task object with task and coins
-  const newTask = { task, coins };
-
-  // Save the task to the database for the user
-  User.findByIdAndUpdate(userId, { $push: { tasks: newTask } })
-    .then(() => {
-      res.redirect('/task-and-reward'); // Redirect to the task-and-reward page instead of the dashboard
-    })
-    .catch(err => {
-      console.error(err);
-      res.redirect('/task-and-reward'); // Redirect to the task-and-reward page instead of the dashboard
-    });
-});
-
-// Save reward route
-app.post('/saveReward', (req, res) => {
-  const { reward, cost } = req.body;
-  const userId = req.user._id;
-
-  // Create a new reward object with reward and cost
-  const newReward = { reward, cost };
-
-  // Save the reward to the database for the user
-  User.findByIdAndUpdate(userId, { $push: { rewards: newReward } })
-    .then(() => {
-      res.redirect('/task-and-reward'); // Redirect to the task-and-reward page instead of the dashboard
-    })
-    .catch(err => {
-      console.error(err);
-      res.redirect('/task-and-reward'); // Redirect to the task-and-reward page instead of the dashboard
-    });
-});
-
-// ...
-
-// Remove task route
-app.post('/removeTask', (req, res) => {
-  const userId = req.user._id;
-  const taskId = req.body.taskId;
-
-  User.findByIdAndUpdate(userId, { $pull: { tasks: { _id: taskId } } })
-    .then(() => {
-      res.json({ success: true, message: 'Task removed successfully.' });
-    })
-    .catch(err => {
-      console.error(err);
-      res.json({ success: false, message: 'An error occurred while removing the task.' });
-    });
-});
-
-// Remove reward route
-app.post('/removeReward', (req, res) => {
-  const userId = req.user._id;
-  const rewardId = req.body.rewardId;
-
-  User.findByIdAndUpdate(userId, { $pull: { rewards: { _id: rewardId } } })
-    .then(() => {
-      res.json({ success: true, message: 'Reward removed successfully.' });
-    })
-    .catch(err => {
-      console.error(err);
-      res.json({ success: false, message: 'An error occurred while removing the reward.' });
-    });
-});
-
-
-
-// ...
-
-// Task and Reward route
-app.get('/task-and-reward', (req, res) => {
-  // Assuming you have user information available in req.user
-  const user = req.user;
-  res.render('task-and-reward', { user });
-});
 
 // Keyholder Portal route
 app.get('/keyholder-portal', (req, res) => {
@@ -627,33 +550,183 @@ app.post('/buy-reward/:userId/:rewardId', (req, res) => {
   });
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Create task list route
+app.get('/create-task-list', (req, res) => {
+  res.render('create-task-list');
+});
+
+// Save task list route
+app.post('/save-task-list', async (req, res) => {
+  const taskListName = req.body.taskListName;
+  const tasks = [];
+
+  // Extract tasks and coins from request body
+  for (let i = 1; i <= req.body.taskCount; i++) {
+    const taskName = req.body[`task${i}Name`];
+    const taskCoins = parseInt(req.body[`task${i}Coins`]);
+    tasks.push({ task: taskName, coins: taskCoins });
+  }
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.taskLists.push({ name: taskListName, tasks: tasks });
+      await user.save();
+      res.redirect('/dashboard');
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (error) {
+    console.error(error);
+    res.redirect('/dashboard');
+  }
+});
+
+// Create reward list route
+app.get('/create-reward-list', (req, res) => {
+  res.render('create-reward-list');
+});
+
+// Save reward list route
+app.post('/save-reward-list', async (req, res) => {
+  const rewardListName = req.body.rewardListName;
+  const rewards = [];
+
+  // Extract rewards and costs from request body
+  for (let i = 1; i <= req.body.rewardCount; i++) {
+    const rewardName = req.body[`reward${i}Name`];
+    const rewardCost = parseInt(req.body[`reward${i}Cost`]);
+    rewards.push({ reward: rewardName, cost: rewardCost });
+  }
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.rewardLists.push({ name: rewardListName, rewards: rewards });
+      await user.save();
+      res.redirect('/dashboard');
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (error) {
+    console.error(error);
+    res.redirect('/dashboard');
+  }
+});
+
+// Remove task list route
+app.post('/remove-task-list', async (req, res) => {
+  const taskListId = req.body.taskListId;
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      const taskList = user.taskLists.id(taskListId);
+      if (taskList) {
+        taskList.remove();
+        await user.save();
+        console.log('Task list removed successfully');
+        res.status(200).json({ success: true, message: 'Task list removed successfully' });
+      } else {
+        console.log('Task list not found');
+        res.status(404).json({ success: false, message: 'Task list not found' });
+      }
+    } else {
+      console.log('User not found');
+      res.status(404).json({ success: false, message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error occurred while removing the task list:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while removing the task list' });
+  }
+});
+
+// Remove reward list route
+app.post('/remove-reward-list', async (req, res) => {
+  const rewardListId = req.body.rewardListId;
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      const rewardList = user.rewardLists.id(rewardListId);
+      if (rewardList) {
+        rewardList.remove();
+        await user.save();
+        console.log('Reward list removed successfully');
+        res.status(200).json({ success: true, message: 'Reward list removed successfully' });
+      } else {
+        console.log('Reward list not found');
+        res.status(404).json({ success: false, message: 'Reward list not found' });
+      }
+    } else {
+      console.log('User not found');
+      res.status(404).json({ success: false, message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error occurred while removing the reward list:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while removing the reward list' });
+  }
+});
+
+// Remove task list route
+app.post('/remove-task-list', async (req, res) => {
+  const taskListId = req.body.taskListId;
+
+  console.log('Received request to remove task list with ID:', taskListId);
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      const taskListIndex = user.taskLists.findIndex((taskList) => taskList._id.toString() === taskListId);
+      if (taskListIndex !== -1) {
+        user.taskLists.splice(taskListIndex, 1);
+        await user.save();
+        console.log('Task list removed successfully');
+        res.status(200).json({ success: true, message: 'Task list removed successfully' });
+      } else {
+        console.log('Task list not found');
+        res.status(404).json({ success: false, message: 'Task list not found' });
+      }
+    } else {
+      console.log('User not found');
+      res.status(404).json({ success: false, message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error occurred while removing the task list:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while removing the task list' });
+  }
+});
 
 
 
+// Remove reward list route
+app.post('/remove-reward-list', async (req, res) => {
+  const rewardListId = req.body.rewardListId;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      const rewardListIndex = user.rewardLists.findIndex((rewardList) => rewardList._id.toString() === rewardListId);
+      if (rewardListIndex !== -1) {
+        user.rewardLists.splice(rewardListIndex, 1);
+        await user.save();
+        console.log('Reward list removed successfully');
+        res.status(200).json({ success: true, message: 'Reward list removed successfully' });
+      } else {
+        console.log('Reward list not found');
+        res.status(404).json({ success: false, message: 'Reward list not found' });
+      }
+    } else {
+      console.log('User not found');
+      res.status(404).json({ success: false, message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error occurred while removing the reward list:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while removing the reward list' });
+  }
+});
 
 
 

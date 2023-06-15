@@ -5,21 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="/stylesheets/styles.css">
-  <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
 </head>
 <body>
-
   <%- include('header') %>
 
+  <div class="container-normal">
+    <h1>Welcome, <%= user ? user.username : '' %>!</h1>
 
-<div class="container-normal">
-  <h1>Welcome, <%= user ? user.username : '' %>!</h1>
-</div>
+    <% if (user && user.taskLists && user.taskLists.length > 0) { %>
+      <h2>Task Lists</h2>
+      <ul>
+        <% user.taskLists.forEach((taskList) => { %>
+          <li>
+            <strong><%= taskList.name %></strong>
+            <button onclick="removeTaskList('<%= taskList._id %>')">Remove</button>
+            <ul>
+              <% if (taskList.tasks && taskList.tasks.length > 0) { %>
+                <% taskList.tasks.forEach((task) => { %>
+                  <li><%= task.task %> - <%= task.coins %> coins</li>
+                <% }); %>
+              <% } else { %>
+                <li>No tasks found.</li>
+              <% } %>
+            </ul>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <p>No task lists found.</p>
+    <% } %>
 
+    <% if (user && user.rewardLists && user.rewardLists.length > 0) { %>
+      <h2>Reward Lists</h2>
+      <ul>
+        <% user.rewardLists.forEach((rewardList) => { %>
+          <li>
+            <strong><%= rewardList.name %></strong>
+            <button onclick="removeRewardList('<%= rewardList._id %>')">Remove</button>
+            <ul>
+              <% if (rewardList.rewards && rewardList.rewards.length > 0) { %>
+                <% rewardList.rewards.forEach((reward) => { %>
+                  <li><%= reward.reward %> - <%= reward.cost %> coins</li>
+                <% }); %>
+              <% } else { %>
+                <li>No rewards found.</li>
+              <% } %>
+            </ul>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <p>No reward lists found.</p>
+    <% } %>
 
+    <% if (user && user.coins !== undefined) { %>
+      <h2>Total Coins: <%= user.coins %></h2>
+    <% } %>
+  </div>
 
+  <%- include('footer') %>
 
- <%- include('footer') %>
-<script src="/script.js"></script>
+  <script src="/script.js"></script>
+  <script>
+    function removeTaskList(taskListId) {
+      if (confirm('Are you sure you want to remove this task list?')) {
+        fetch('/remove-task-list', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ taskListId }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              location.reload();
+            } else {
+              alert('Failed to remove task list. Please try again.');
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            alert('An error occurred while removing the task list.');
+          });
+      }
+    }
+
+    function removeRewardList(rewardListId) {
+      if (confirm('Are you sure you want to remove this reward list?')) {
+        fetch('/remove-reward-list', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ rewardListId }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              location.reload();
+            } else {
+              alert('Failed to remove reward list. Please try again.');
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            alert('An error occurred while removing the reward list.');
+          });
+      }
+    }
+
+    function editTaskList(taskListId) {
+      // Implement the logic to edit the task list
+      // Redirect the user to the appropriate page or show a form for editing the task list
+      // You can use the taskListId to identify the task list to edit
+    }
+
+    function editRewardList(rewardListId) {
+      // Implement the logic to edit the reward list
+      // Redirect the user to the appropriate page or show a form for editing the reward list
+      // You can use the rewardListId to identify the reward list to edit
+    }
+  </script>
 </body>
 </html>
