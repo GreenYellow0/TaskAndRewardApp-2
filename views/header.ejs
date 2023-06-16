@@ -85,8 +85,6 @@
     <a href="/dashboard">Dashboard</a>
     <% if (user) { %>
       <!---<a href="/task-and-reward">Manage Tasks and Rewards</a>-->
-      <button onclick="openTaskListForm()">Create Task List</button>
-      <button onclick="openRewardListForm()">Create Reward List</button>
       <a href="/keyholder-portal">Keyholder Portal</a>
       <a href="/orgasm-tracker">Orgasm Tracker</a>
       <a href="/cage-alarm-tracker">Cage Alarm Tracker</a>
@@ -165,11 +163,5 @@
     disableDarkMode();
   }
 
-  function openTaskListForm() {
-    window.open('/create-task-list', 'Create Task List', 'width=400,height=400');
-  }
 
-  function openRewardListForm() {
-    window.open('/create-reward-list', 'Create Reward List', 'width=400,height=400');
-  }
 </script>
