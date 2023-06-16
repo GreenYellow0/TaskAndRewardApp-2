@@ -352,6 +352,10 @@ app.get('/games', (req, res) => {
   res.render('games', { user });
 });
 
+app.get('/locktober-countdown', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+  res.render('locktober-countdown', { user });
+});
 
 app.post('/saveCageAlarm', (req, res) => {
   const userId = req.user._id;
