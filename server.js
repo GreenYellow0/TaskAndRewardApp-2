@@ -8,6 +8,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const passportLocalMongoose = require('passport-local-mongoose');
 const flash = require('connect-flash');
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
  
@@ -32,6 +33,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   });
   
   
+  
   const userSchema = new mongoose.Schema({
     username: { type: String, unique: true },
     password: String,
@@ -40,7 +42,6 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     orgasms: [orgasmSchema],
     cageAlarms: [cageAlarmSchema],
   });
-  
   
   
 
@@ -460,6 +461,8 @@ app.get('/cage-alarm-log', (req, res) => {
     });
 });
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
