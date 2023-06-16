@@ -341,6 +341,16 @@ app.get('/help-doc', (req, res) => {
 });
 
 
+app.get('/spinningwheel', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+  res.render('spinningwheel', { user });
+});
+
+
+app.get('/games', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+  res.render('games', { user });
+});
 
 
 app.post('/saveCageAlarm', (req, res) => {

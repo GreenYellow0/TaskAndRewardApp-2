@@ -7,8 +7,8 @@
   .topnav {
     overflow: hidden;
     background-color: #333;
+    position: relative; /* Added position relative */
   }
-
   .topnav a {
     float: left;
     display: block;
@@ -65,20 +65,60 @@
   }
 
   .topnav .dark-mode-button {
-  float: right;
-  margin-top: 8px;
-  margin-right: 16px;
-  padding: 6px 10px;
-  background-color: #555;
-  color: #fff;
-}
+    float: right;
+    margin-top: 8px;
+    margin-right: 16px;
+    padding: 6px 10px;
+    background-color: #555;
+    color: #fff;
+  }
 
-.topnav .dark-mode-button i {
-  color: #fff;
-}
+  .topnav .dark-mode-button i {
+    color: #fff;
+  }
 
+  .topnav .games-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: 0;
+  }
 
+  .topnav .games-dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    width: 100%; /* Added to ensure full width within the dropdown */
+  }
+
+  .topnav .games-dropdown-content a:hover {
+    background-color: #ddd;
+  }
+
+  /* Updated media query to ensure dropdown visibility on small screens */
+  @media screen and (max-width: 600px) {
+    .topnav.responsive .games-dropdown-content {
+      position: relative; /* Changed to relative positioning for mobile */
+      min-width: unset; /* Removed min-width to allow full width */
+      box-shadow: none; /* Removed box shadow */
+    }
+
+    .topnav.responsive .games-dropdown-content a {
+      width: auto; /* Removed width to allow natural width */
+    }
+
+    /* New rule to lower the spinning wheel when the dropdown is active */
+    .topnav.responsive .menu-open #app {
+      top: 60%;
+    }
+  }
 </style>
+
 
 <nav>
   <div class="topnav" id="myTopnav">
@@ -88,6 +128,7 @@
       <a href="/orgasm-tracker">Orgasm Tracker</a>
       <a href="/cage-alarm-tracker">Cage Alarm Tracker</a>
       <a href="/help-doc">Help Doc</a>
+      <a href="/games">Games</a>
       <a href="/logout">Logout</a>
     <% } %>
     <a href="javascript:void(0);" class="icon" onclick="myFunction()">
@@ -96,7 +137,6 @@
     <button class="dark-mode-button" onclick="toggleDarkMode()">
       <i class="fas fa-moon"></i>
     </button>
-    
   </div>
 </nav>
 
@@ -120,6 +160,29 @@
     } else {
       x.className = "topnav";
     }
+  }
+
+  function toggleGamesDropdown() {
+    var dropdownContent = document.querySelector('.games-dropdown-content');
+    var gamesButton = document.querySelector('.games');
+
+    if (dropdownContent.style.display === 'block') {
+      dropdownContent.style.display = 'none';
+    } else {
+      // Calculate the position of the games button
+      var buttonRect = gamesButton.getBoundingClientRect();
+      var buttonTop = buttonRect.bottom;
+      var buttonLeft = buttonRect.left;
+
+      // Set the position of the dropdown content
+      dropdownContent.style.top = buttonTop + 'px';
+      dropdownContent.style.left = buttonLeft + 'px';
+
+      dropdownContent.style.display = 'block';
+    }
+
+    // Toggle the menu-open class on the body to lower the spinning wheel
+    document.body.classList.toggle('menu-open');
   }
 
   // Function to set the dark mode preference in local storage
@@ -161,6 +224,4 @@
   } else {
     disableDarkMode();
   }
-
-
 </script>
