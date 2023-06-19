@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyholder Questions</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+</head>
+<body>
+  <% include('header') %>
+
+  <div class="question-container">
+    <h2>Create Questions</h2>
+    <form id="questionForm">
+      <input type="text" id="questionList" placeholder="Question List Name" required>
+      <div id="questionsContainer"></div>
+      <button type="submit">Add Question</button>
+    </form>
+  </div>
+
+  <div class="question-lists">
+    <h2>Question Lists</h2>
+    <div id="questionLists"></div>
+  </div>
+
+  <div class="actions">
+    <button id="saveQuestionsBtn">Save Questions</button>
+    <button id="shareQuestionsBtn">Share Questions</button>
+  </div>
+
+  <%- include('footer') %>
+
+  <script src="/script.js"></script>
+  <script>
+    const questionForm = document.getElementById('questionForm');
+    const questionsContainer = document.getElementById('questionsContainer');
+
+    let questionCount = 1;
+
+    questionForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const questionList = document.getElementById('questionList').value;
+      const questionInputs = document.querySelectorAll('.question-input');
+
+      const questions = Array.from(questionInputs).map((input) => input.value);
+
+      const questionListElement = document.createElement('div');
+      questionListElement.className = 'question-list';
+
+      const questionListTitle = document.createElement('h3');
+      questionListTitle.textContent = questionList;
+      questionListElement.appendChild(questionListTitle);
+
+      const questionListContainer = document.createElement('div');
+
+      questions.forEach((question) => {
+        const questionText = document.createElement('p');
+        questionText.textContent = question;
+        questionListContainer.appendChild(questionText);
+      });
+
+      questionListElement.appendChild(questionListContainer);
+
+      const questionLists = document.getElementById('questionLists');
+      questionLists.appendChild(questionListElement);
+
+      // Clear the form
+      questionForm.reset();
+      questionsContainer.innerHTML = '';
+      questionCount = 1;
+    });
+
+    function addQuestionInput() {
+      const questionInput = document.createElement('input');
+      questionInput.type = 'text';
+      questionInput.classList.add('question-input');
+      questionInput.placeholder = `Question ${questionCount}`;
+      questionsContainer.appendChild(questionInput);
+
+      questionCount++;
+    }
+
+    const addQuestionBtn = document.createElement('button');
+    addQuestionBtn.textContent = 'Add Question';
+    addQuestionBtn.addEventListener('click', addQuestionInput);
+    questionsContainer.appendChild(addQuestionBtn);
+
+    // Event listener for saving the questions
+    const saveQuestionsBtn = document.getElementById('saveQuestionsBtn');
+    saveQuestionsBtn.addEventListener('click', () => {
+      const questionElements = document.querySelectorAll('.question-list');
+      const questionListItems = Array.from(questionElements).map((questionElement) => {
+        const questionList = questionElement.querySelector('h3').textContent;
+        const questionParagraphs = Array.from(questionElement.querySelectorAll('p'));
+        const questions = questionParagraphs.map((p) => p.textContent);
+        return { questionList, questions };
+      });
+
+      // Send the question list items to the server for saving
+      fetch('/saveQuestions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ questionListItems })
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert('Questions saved successfully!');
+          } else {
+            alert('Error saving questions. Please try again.');
+          }
+        })
+        .catch((error) => console.error('Error saving questions:', error));
+    });
+
+    // Event listener for sharing the questions
+    const shareQuestionsBtn = document.getElementById('shareQuestionsBtn');
+    shareQuestionsBtn.addEventListener('click', () => {
+      const shareURL = window.location.href;
+
+      // Show the URL to the user
+      alert(`Share this URL with other users: ${shareURL}`);
+    });
+  </script>
+</body>
+</html>
