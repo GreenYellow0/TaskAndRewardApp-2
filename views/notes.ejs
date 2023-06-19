@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyholder Notes</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
+</head>
+<body>
+
+  <%- include('header') %>
+
+
+  <div class="container-normal">
+    <h1>Welcome to the Keyholder Notes, <%= user ? user.username : '' %>!</h1>
+
+    <div class="container-normal">
+        <a href="/keyholder-portal" class="tracker-link">Go back to keyholder portal</a> <!-- Add the link to the cage-alarm-tracker page -->
+      </div>
+
+    <form action="/saveNote" method="POST">
+        <textarea name="note" rows="10" cols="50"></textarea>
+        <br>
+        <button type="submit">Save Note</button>
+      </form>
+    
+      <h2>My Notes</h2>
+      <% if (user && user.notes.length > 0) { %>
+        <ul>
+          <% user.notes.forEach((note, index) => { %>
+            <li>
+              <%= note %>
+              <form action="/removeNote" method="POST" style="display: inline;">
+                <input type="hidden" name="noteIndex" value="<%= index %>">
+                <button type="submit">Remove</button>
+              </form>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p>No notes found.</p>
+      <% } %>
+    </div>
+
+
+  <%- include('footer') %>
+
+  <script src="/script.js"></script>
+</body>
+</html>

@@ -196,11 +196,11 @@ app.post('/saveNote', (req, res) => {
 
   User.findByIdAndUpdate(userId, { $push: { notes: note } })
     .then(() => {
-      res.redirect('/keyholder-portal');
+      res.redirect('/notes');
     })
     .catch(err => {
       console.error(err);
-      res.redirect('/keyholder-portal');
+      res.redirect('/notes');
     });
 });
 
@@ -213,16 +213,16 @@ app.post('/removeNote', (req, res) => {
     .then(user => {
       if (!user) {
         console.error('User not found');
-        res.redirect('/keyholder-portal');
+        res.redirect('/notes');
       } else {
         user.notes.splice(noteIndex, 1);
         user.save()
           .then(() => {
-            res.redirect('/keyholder-portal');
+            res.redirect('/notes');
           })
           .catch(err => {
             console.error(err);
-            res.redirect('/keyholder-portal');
+            res.redirect('/notes');
           });
       }
     })
@@ -358,6 +358,11 @@ app.get('/games', (req, res) => {
 app.get('/locktober-countdown', (req, res) => {
   const user = req.user; // Assuming you have stored the user object in the req.user property
   res.render('locktober-countdown', { user });
+});
+
+app.get('/notes', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+  res.render('notes', { user });
 });
 
 app.post('/saveCageAlarm', (req, res) => {
