@@ -262,30 +262,28 @@ app.get('/orgasm-tracker', (req, res) => {
   res.render('orgasm-tracker', { user, orgasms });
 });
 
-
 app.get('/getChartData', (req, res) => {
   const userId = req.user._id;
   const timeRange = req.query.timeRange;
 
-  // Write code to retrieve the data based on the time range
-  // For example:
   User.findById(userId)
     .then((user) => {
-      const orgasms = user.orgasms;
+      let orgasms = user.orgasms;
 
       // Get the start and end date for the selected time range
       let startDate, endDate;
       if (timeRange === 'week') {
         startDate = new Date();
-        startDate.setDate(startDate.getDate() - 7);
+        startDate.setHours(0, 0, 0, 0); // Set the start date to the beginning of the current day
+        startDate.setDate(startDate.getDate() - startDate.getDay() + 1); // Set the start date to Monday of the current week
         endDate = new Date();
       } else if (timeRange === 'month') {
         startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - 1);
+        startDate.setDate(1); // Set the start date to the beginning of the current month
         endDate = new Date();
       } else if (timeRange === 'year') {
         startDate = new Date();
-        startDate.setFullYear(startDate.getFullYear() - 1);
+        startDate.setMonth(0, 1); // Set the start date to January 1 of the current year
         endDate = new Date();
       }
 
@@ -317,6 +315,11 @@ app.get('/getChartData', (req, res) => {
       res.status(500).json({ error: 'Failed to retrieve chart data' });
     });
 });
+
+
+
+
+
 
 
 // Handle GET request for '/orgasm-log'
@@ -427,34 +430,32 @@ app.get('/getChartData', (req, res) => {
         endDate = new Date();
       }
 
-      // Filter the cage alarms based on the selected time range
-      const filteredAlarms = cageAlarms.filter((alarm) => {
-        const alarmDate = new Date(alarm.date);
-        return alarmDate >= startDate && alarmDate <= endDate;
-      });
+      // Filter the cage alarms based on the selected time range and sort them by date
+      const filteredAlarms = cageAlarms
+        .filter((alarm) => {
+          const alarmDate = new Date(alarm.date);
+          return alarmDate >= startDate && alarmDate <= endDate;
+        })
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      // Group the alarms by date and count the number of alarms for each date
+      // Group the filtered alarms by date and count the number of alarms for each date
       const chartData = {};
       filteredAlarms.forEach((alarm) => {
         const dateStr = alarm.date.toISOString().split('T')[0];
-        if (chartData[dateStr]) {
-          chartData[dateStr]++;
-        } else {
-          chartData[dateStr] = 1;
-        }
+        chartData[dateStr] = (chartData[dateStr] || 0) + 1;
       });
 
-      // Prepare the data in the required format for the chart
-      const labels = Object.keys(chartData);
-      const alarmCounts = Object.values(chartData);
+      // Create an array of objects with date and count properties for chart data
+      const data = Object.keys(chartData).map(date => ({ date, count: chartData[date] }));
 
-      res.json({ labels, alarmCounts });
+      res.json({ success: true, data });
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: 'Failed to retrieve chart data' });
+      res.status(500).json({ success: false, error: 'Failed to retrieve chart data' });
     });
 });
+
 
 
 

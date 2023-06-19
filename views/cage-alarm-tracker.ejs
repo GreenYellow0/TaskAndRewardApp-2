@@ -6,32 +6,6 @@
   <title>Cage Alarm Tracker</title>
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-  <style>
-    .charts-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-
-    @media (max-width: 950px) {
-      .charts-container {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-
-    .chart-container {
-      width: 48%;
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 950px) {
-      .chart-container {
-        width: 100%;
-      }
-    }
-  </style>
 </head>
 <body>
   <%- include('header') %>
@@ -51,177 +25,45 @@
     <% } %>
   </div>
 
-  <div class="container-normal">
-    <!-- Add the dropdown menu and button for time range selection -->
-    <select id="timeRange">
-      <option value="week">Week Progress</option>
-      <option value="month">Month Progress</option>
-      <option value="year">Year Progress</option>
-    </select>
-    <button id="generateChartBtn" onclick="generateChart()">Generate Chart</button>
-  </div>
-
-  <!-- Add the container for the chart -->
-  <div class="charts-container">
-    <div class="chart-container">
-      <canvas id="barChart"></canvas>
-    </div>
-  </div>
+ 
 
   <%- include('footer') %>
+  <script>
+    function saveCageAlarm() {
+      const today = new Date().toISOString().split("T")[0];
 
-<script>
-  // Retrieve the cage alarm data from the server-side variable
-const cageAlarmsData = JSON.parse('<%- JSON.stringify(cageAlarms) %>');
+      // Send a POST request to save the cage alarm
+      fetch("/saveCageAlarm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ date: today })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Cage alarm saved successfully
+            alert("Cage alarm saved!");
 
-let barChart;
-const barChartOptions = {
-  responsive: true,
-  scales: {
-    y: {
-      beginAtZero: true,
-      stepSize: 1
+            // Refresh the page to update the cage alarm data
+            location.reload();
+          } else {
+            // Failed to save the cage alarm
+            alert("Failed to save the cage alarm.");
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("An error occurred while saving the cage alarm.");
+        });
     }
-  },
-  plugins: {
-    title: {
-      display: true,
-      text: ""
-    }
-  }
-};
 
-function saveCageAlarm() {
-  const today = new Date().toISOString().split("T")[0];
 
-  // Send a POST request to save the cage alarm
-  fetch("/saveCageAlarm", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ date: today })
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        // Cage alarm saved successfully
-        alert("Cage alarm saved!");
 
-        // Update the cage alarm data
-        cageAlarmsData.push({ date: today });
-
-        // Generate the updated chart
-        generateChart();
-      } else {
-        // Failed to save the cage alarm
-        alert("Failed to save the cage alarm.");
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      alert("An error occurred while saving the cage alarm.");
+    document.addEventListener("DOMContentLoaded", function() {
+      generateChart();
     });
-}
-
-function generateChart() {
-  const selectedRange = document.getElementById("timeRange").value;
-  let chartTitle = "";
-  let labels = [];
-  let data = [];
-
-  if (selectedRange === "week") {
-    chartTitle = "Cage Alarm Count for the Week";
-    labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    data = [0, 0, 0, 0, 0, 0, 0]; // Initialize with zero counts for each day
-
-    // Calculate the alarm counts for each day of the week
-    cageAlarmsData.forEach((alarm) => {
-      const date = new Date(alarm.date);
-      const dayOfWeek = (date.getDay() + 6) % 7; // Adjust the day index to start from Monday
-
-      // Exclude future Mondays
-      const today = new Date();
-      const currentDay = today.getDay();
-      const currentHour = today.getHours();
-      if (currentDay === 1 && currentHour < 6 && dayOfWeek === 0) {
-        return;
-      }
-
-      // Exclude Sundays on Mondays
-      if (currentDay === 1 && dayOfWeek === 6) {
-        return;
-      }
-
-      data[dayOfWeek]++;
-    });
-  } else if (selectedRange === "month") {
-    chartTitle = "Cage Alarm Count for the Month";
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth(); // 0: January, 1: February, ..., 11: December
-    const totalDays = new Date(currentDate.getFullYear(), currentMonth + 1, 0).getDate(); // Total days in the current month
-
-    labels = Array.from({ length: totalDays }, (_, i) => (i + 1).toString());
-    data = Array.from({ length: totalDays }, () => 0); // Initialize with zero counts for each day
-
-    // Calculate the alarm counts for each day of the month
-    cageAlarmsData.forEach((alarm) => {
-      const date = new Date(alarm.date);
-      if (date.getMonth() === currentMonth) {
-        const dayOfMonth = date.getDate(); // 1, 2, ..., 31
-        data[dayOfMonth - 1]++;
-      }
-    });
-  } else if (selectedRange === "year") {
-    chartTitle = "Cage Alarm Count for the Year";
-    labels = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-    data = Array.from({ length: 12 }, () => 0); // Initialize with zero counts for each month
-
-    // Calculate the alarm counts for each month of the year
-    cageAlarmsData.forEach((alarm) => {
-      const date = new Date(alarm.date);
-      const month = date.getMonth(); // 0: January, 1: February, ..., 11: December
-      data[month]++;
-    });
-  }
-
-  // Remove any existing event listeners
-  if (barChart) {
-    barChart.destroy();
-    document.getElementById("barChart").removeEventListener("mousemove", handleChartHover);
-  }
-
-  barChart = new Chart("barChart", {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Cage Alarm Count",
-        data: data,
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1
-      }]
-    },
-    options: barChartOptions
-  });
-
-  document.getElementById("barChart").addEventListener("mousemove", handleChartHover);
-}
-
-function handleChartHover(event) {
-  // Code to handle the chart hover event
-  // ...
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  generateChart();
-});
-
-</script>
-  
+  </script>
 </body>
 </html>

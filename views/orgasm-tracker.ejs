@@ -141,42 +141,38 @@
       if (selectedRange === "week") {
         chartTitle = "Orgasm Count for the Week";
         labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-        data = [0, 0, 0, 0, 0, 0, 0]; // Initialize with zero counts for each day
   
-        // Calculate the orgasm counts for each day of the week
+        const today = new Date();
+        const currentDay = today.getDay();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - currentDay + (currentDay === 0 ? -6 : 1));
+        startOfWeek.setHours(0, 0, 0, 0);
+  
+        data = Array(7).fill(0);
+  
         orgasmsData.forEach((orgasm) => {
           const date = new Date(orgasm.date);
-          const dayOfWeek = (date.getDay() + 6) % 7; // Adjust the day index to start from Monday
+          date.setHours(0, 0, 0, 0);
   
-          // Exclude future Mondays
-          const today = new Date();
-          const currentDay = today.getDay();
-          const currentHour = today.getHours();
-          if (currentDay === 1 && currentHour < 6 && dayOfWeek === 0) {
-            return;
+          const dayDiff = Math.floor((date - startOfWeek) / (24 * 60 * 60 * 1000));
+  
+          if (dayDiff >= 0 && dayDiff < 7) {
+            data[dayDiff]++;
           }
-  
-          // Exclude Sundays on Mondays
-          if (currentDay === 1 && dayOfWeek === 6) {
-            return;
-          }
-  
-          data[dayOfWeek]++;
         });
       } else if (selectedRange === "month") {
         chartTitle = "Orgasm Count for the Month";
         const currentDate = new Date();
-        const currentMonth = currentDate.getMonth(); // 0: January, 1: February, ..., 11: December
-        const totalDays = new Date(currentDate.getFullYear(), currentMonth + 1, 0).getDate(); // Total days in the current month
+        const currentMonth = currentDate.getMonth();
+        const totalDays = new Date(currentDate.getFullYear(), currentMonth + 1, 0).getDate();
   
         labels = Array.from({ length: totalDays }, (_, i) => (i + 1).toString());
-        data = Array.from({ length: totalDays }, () => 0); // Initialize with zero counts for each day
+        data = Array.from({ length: totalDays }, () => 0);
   
-        // Calculate the orgasm counts for each day of the month
         orgasmsData.forEach((orgasm) => {
           const date = new Date(orgasm.date);
           if (date.getMonth() === currentMonth) {
-            const dayOfMonth = date.getDate(); // 1, 2, ..., 31
+            const dayOfMonth = date.getDate();
             data[dayOfMonth - 1]++;
           }
         });
@@ -186,17 +182,15 @@
           "January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December"
         ];
-        data = Array.from({ length: 12 }, () => 0); // Initialize with zero counts for each month
+        data = Array(12).fill(0);
   
-        // Calculate the orgasm counts for each month of the year
         orgasmsData.forEach((orgasm) => {
           const date = new Date(orgasm.date);
-          const month = date.getMonth(); // 0: January, 1: February, ..., 11: December
+          const month = date.getMonth();
           data[month]++;
         });
       }
   
-      // Remove any existing event listeners
       if (barChart) {
         barChart.destroy();
         document.getElementById("barChart").removeEventListener("mousemove", handleChartHover);
@@ -229,6 +223,12 @@
       generateChart();
     });
   </script>
+  
+  
+  
+  
+  
+  
   
 </body>
 </html>
