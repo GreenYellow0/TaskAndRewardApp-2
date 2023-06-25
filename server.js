@@ -10,13 +10,13 @@ const flash = require('connect-flash');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
+const Schema = mongoose.Schema;
 
  
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
-
 
 
 
@@ -33,37 +33,21 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     date: { type: Date, default: Date.now },
     time: Date
   });
+
+
+  const userSchema = new mongoose.Schema({
+    username: { type: String, unique: true },
+    password: String,
+    email: { type: String, unique: true },
+    notes: [String],
+    orgasms: [orgasmSchema],
+    cageAlarms: [cageAlarmSchema],
+
+  });
   
+  userSchema.plugin(passportLocalMongoose);
+  const User = mongoose.model('User', userSchema);
   
-// Define the schema for questions
-const questionSchema = new mongoose.Schema({
-  questionList: String,
-  questions: [{ questionText: String }]
-});
-
-// Define the schema for answers
-const answerSchema = new mongoose.Schema({
-  questionId: String,
-  answerText: String
-});
-
-// Define the schema for users
-const userSchema = new mongoose.Schema({
-  username: { type: String, unique: true },
-  password: String,
-  email: { type: String, unique: true },
-  notes: [String],
-  orgasms: [orgasmSchema],
-  cageAlarms: [cageAlarmSchema],
-  questions: [questionSchema],
-  answers: [answerSchema]
-});
-  
-
-
-userSchema.plugin(passportLocalMongoose); // Add passport-local-mongoose plugin
-
-const User = mongoose.model('User', userSchema);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -199,8 +183,8 @@ app.post('/profile/:id', (req, res) => {
 
 
 // Keyholder Portal route
-app.get('/keyholder-portal', (req, res) => {
-  res.render('keyholder-portal', { user: req.user });
+app.get('/keyholder-lockee-portal', (req, res) => {
+  res.render('keyholder-lockee-portal', { user: req.user });
 });
 
 
@@ -505,117 +489,6 @@ app.get('/cage-alarm-log', (req, res) => {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Serve the questions to the client
-app.get('/questions', (req, res) => {
-  Question.find({}, (err, questions) => {
-    if (err) {
-      console.error('Error retrieving questions:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json({ questions });
-    }
-  });
-});
-
-// Save the questions to the database
-app.post('/saveQuestions', (req, res) => {
-  const questionList = req.body.questionList;
-  const questions = req.body.questions;
-
-  const newQuestion = {
-    questionList,
-    questions
-  };
-
-  Question.create(newQuestion, (err, savedQuestion) => {
-    if (err) {
-      console.error('Error saving questions:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.sendStatus(200);
-    }
-  });
-});
-
-// Save user answers to the database
-app.post('/saveUserAnswers', (req, res) => {
-  const username = req.body.username;
-  const answers = req.body.answers;
-
-  User.findOneAndUpdate(
-    { username },
-    { answers },
-    { new: true },
-    (err, user) => {
-      if (err) {
-        console.error('Error saving user answers:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.sendStatus(200);
-      }
-    }
-  );
-});
-
-// Retrieve user questions from the database
-app.get('/getUserQuestions', (req, res) => {
-  const username = req.query.username;
-
-  User.findOne({ username }, 'questions', (err, user) => {
-    if (err) {
-      console.error('Error retrieving user questions:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json({ questions: user.questions });
-    }
-  });
-});
-
-// Generate a unique URL for sharing questions
-app.get('/shareQuestions', (req, res) => {
-  const questionListId = req.query.questionListId;
-  const uniqueUrl = uuidv4();
-
-  Question.findByIdAndUpdate(
-    questionListId,
-    { uniqueUrl },
-    { new: true },
-    (err, updatedQuestionList) => {
-      if (err) {
-        console.error('Error generating unique URL:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json({ uniqueUrl });
-      }
-    }
-  );
-});
-
-// Serve the shared questions to the client
-app.get('/sharedQuestions', (req, res) => {
-  const uniqueUrl = req.query.uniqueUrl;
-
-  Question.findOne({ uniqueUrl }, (err, questionList) => {
-    if (err) {
-      console.error('Error retrieving shared questions:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else if (!questionList) {
-      res.status(404).json({ error: 'Question list not found' });
-    } else {
-      res.json({ questionList });
-    }
-  });
-});
-
-// Generate a PDF file for shared answers
-app.post('/generatePDF', (req, res) => {
-  const answers = req.body.answers;
-
-  // Code to generate PDF from answers
-
-  // Send the PDF file as a response
-});
 
 
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keyholder Portal</title>
+  <title>Keyholder Lockee Portal</title>
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <link rel="icon"  href="/images/LOGO-removebg-preview.png" sizes="32x32">
 </head>
@@ -12,11 +12,11 @@
   <%- include('header') %>
 
   <div class="container-normal">
-    <h1>Welcome to the Keyholder Portal, <%= user ? user.username : '' %>!</h1>
+    <h1>Welcome to the Keyholder Lockee Portal, <%= user ? user.username : '' %>!</h1>
 
     <% if (user) { %>
       <a href="/notes" class="button-orgasm-log">Keyholder Notes</a>
-      <a href="/questions" class="button-orgasm-log">Keyholder Questions List</a>
+
     <% } %>
   </div>
 
