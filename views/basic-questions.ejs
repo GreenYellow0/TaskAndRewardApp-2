@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic Questions</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <style>
+    form#questionForm input.name-input {
+      width: 100px; /* Adjust the width as per your preference */
+    }
+    .container-normal {
+      padding-top: 2%;
+    }
+  </style>
+</head>
+<body>
+  <%- include('header') %>
+
+  <div class="container-normal">
+    <form id="questionForm" method="POST" action="/generate-pdf">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" class="name-input" required><br>
+  
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="None-binary">None-Binary</option>
+        <option value="PreferNotToTell">Prefer not to tell</option>
+      </select><br>
+      <br>
+
+      <label for="country">Country:</label>
+      <select id="country" name="country" required>
+        <option value="Afrika">Afrika</option>
+        <option value="Asia">Asia</option>
+        <option value="Australia">Australia</option>
+        <option value="Canada">Canada</option>
+        <option value="Europe">Europe</option>
+        <option value="USA">USA</option>
+      </select><br>
+      <br>
+
+      <label for="chastityduration">Longest time in chastity?:</label>
+      <select id="chastityduration" name="chastityduration" required>
+        <option value="1 Week">1 Week</option>
+        <option value="2 Weeks">2 Weeks</option>
+        <option value="1 Month">1 Month</option>
+        <option value="3 Months">3 Months</option>
+        <option value="6 Months">6 Months</option>
+        <option value="9 Months">9 Months</option>
+        <option value="1 Year">1 Year</option>
+        <option value="2 Years">2 Years</option>
+        <option value="Longer then 2 years">Longer then 2 years</option>
+      </select><br>
+      <br>
+
+      <!-- Radio Input Only 1 answer-->
+
+<!--      <label for="chastityduration">Longest time in chastity ?:</label><br>
+      <input type="radio" id="chastityduration" name="chastityduration" value="1">
+      <label for="chastityduration">Sports</label><br>
+      <input type="radio" id="chastityduration" name="chastityduration" value="Music">
+      <label for="chastityduration">Music</label><br>
+      <input type="radio" id="chastityduration" name="chastityduration" value="Art">
+      <label for="chastityduration">Art</label><br>-->
+
+      <!--Checkbox multiple answers-->
+  
+      <label>What type of chastity device do you own?:</label><br>
+      <input type="checkbox" id="chastitydeviceown" name="chastitydeviceown" value="Chastity Cage">
+      <label for="chastitydeviceown">Chastity Cage</label><br>
+      <input type="checkbox" id="chastitydeviceown" name="chastitydeviceown" value="Chastity Belt">
+      <label for="chastitydeviceown">Chastity Belt</label><br>
+      <input type="checkbox" id="chastitydeviceown" name="chastitydeviceown" value="None">
+      <label for="chastitydeviceown">None</label><br>
+
+  
+      <button type="submit">Generate PDF</button>
+    </form>
+  </div>
+
+  <%- include('footer') %>
+
+  <script src="/script.js"></script>
+  
+</body>
+</html>

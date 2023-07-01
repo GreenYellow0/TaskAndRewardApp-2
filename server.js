@@ -11,6 +11,9 @@ const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const Schema = mongoose.Schema;
+const PDFDocument = require('pdfkit');
+const path = require('path');
+
 
  
 // Connect to MongoDB
@@ -365,11 +368,15 @@ app.get('/notes', (req, res) => {
 });
 
 
-app.get('/questions', (req, res) => {
+app.get('/questions-page', (req, res) => {
   const user = req.user; // Assuming you have stored the user object in the req.user property
-  res.render('questions', { user });
+  res.render('questions-page', { user });
 });
 
+app.get('/basic-questions', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+  res.render('basic-questions', { user });
+});
 
 app.post('/saveCageAlarm', (req, res) => {
   const userId = req.user._id;
@@ -490,6 +497,53 @@ app.get('/cage-alarm-log', (req, res) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Define route for serving the questions page
+app.get('/questions', (req, res) => {
+  res.render('basic-questions'); // Render the basic-questions.ejs file
+});
+
+// Define route for generating the PDF file
+app.post('/generate-pdf', (req, res) => {
+  const doc = new PDFDocument();
+
+  // Set the response headers for PDF file
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="basic-questions-${Date.now()}.pdf"`);
+
+  // Pipe the PDF document to the response
+  doc.pipe(res);
+
+// Load and embed the image
+const imagePath = path.join(__dirname, 'public', 'images', 'LOGO-removebg-preview.png');
+doc.image(imagePath, doc.page.width - 100, 30, { width: 75 });
+
+
+// Write the questions and answers to the PDF document
+doc.fontSize(16).text('Basic Questions:', { underline: true });
+
+// Format the user-inputted answers
+doc.font('Helvetica').fontSize(12).text('Username:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.name}`);
+doc.font('Helvetica').fontSize(12).text('Gender:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.gender}`);
+doc.font('Helvetica').fontSize(12).text('Country:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.country}`);
+doc.font('Helvetica').fontSize(12).text('Longest In Chastity:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.chastityduration}`);
+doc.font('Helvetica').fontSize(12).text('Type of chastity device you own:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.chastitydeviceown}`);
+
+
+
+
+// Reset the font to the default
+doc.font('Helvetica').fontSize(12);
+
+
+// Add the "Generated on the ChastityLogHub website" line with underline
+doc.moveDown().fontSize(10).text('Generated on the ChastityLogHub website');
+const underlineY = doc.y + 3; // Adjust the value to position the underline appropriately
+doc.lineWidth(1).moveTo(doc.x, underlineY).lineTo(doc.x + doc.widthOfString('Generated on the ChastityLogHub website'), underlineY).stroke();
+
+// Finalize the PDF document
+doc.end();
+
+});
 
 
 
