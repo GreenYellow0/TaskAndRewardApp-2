@@ -23,6 +23,15 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 
 
+  // Set up the models and schemas
+const questionSchema = new mongoose.Schema({
+  question: String,
+  type: String
+});
+
+const Question = mongoose.model('Question', questionSchema);
+
+
 
   const orgasmSchema = new mongoose.Schema({
     type: String,
@@ -378,6 +387,11 @@ app.get('/basic-questions', (req, res) => {
   res.render('basic-questions', { user });
 });
 
+app.get('/basic-questions', (req, res) => {
+  res.render('basic-questions', { user: req.user });
+});
+
+
 app.post('/saveCageAlarm', (req, res) => {
   const userId = req.user._id;
   const date = new Date();
@@ -497,10 +511,7 @@ app.get('/cage-alarm-log', (req, res) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Define route for serving the questions page
-app.get('/questions', (req, res) => {
-  res.render('basic-questions'); // Render the basic-questions.ejs file
-});
+
 
 // Define route for generating the PDF file
 app.post('/generate-pdf', (req, res) => {
@@ -544,6 +555,9 @@ doc.lineWidth(1).moveTo(doc.x, underlineY).lineTo(doc.x + doc.widthOfString('Gen
 doc.end();
 
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

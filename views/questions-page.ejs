@@ -52,6 +52,12 @@
     <h2>Questions!</h2>
   </div>
 
+  <% if (user) { %>
+    <a href="/create-questions" class="tracker-link">Create Questions</a> <!-- Add the link to the orgasm-log page -->
+  <% } %>
+
+
+
    <div class="tab">
     <button class="tablinks" onclick="openCity(event, 'BasicQuestions')">Basic Questions</button>
     <button class="tablinks" onclick="openCity(event, '#1')">#1</button>
