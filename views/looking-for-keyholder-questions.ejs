@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Looking For Keyhoder Questions</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <style>
+    form#questionForm input.name-input {
+      width: 100px; /* Adjust the width as per your preference */
+    }
+
+    textarea {
+  font-family: Arial, sans-serif;
+}
+
+
+  </style>
+</head>
+<body>
+  <%- include('header') %>
+
+  <div class="container-normal">
+    <h2>Looking For Keyholder Questions</h2>
+  </div>
+
+  <div class="container-normal">
+    <form id="questionForm" method="POST" action="/generate-pdf-looking-for-keyholder">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" class="name-input" required><br>
+  
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="Agender">Agender</option>
+        <option value="Bi-Gender">Bi-Gender</option>
+        <option value="Female">Female</option>
+        <option value="Genderfluid">Genderfluid</option>
+        <option value="Genderless">Genderless</option>
+        <option value="Gender-Queer">Gender-Queer</option>
+        <option value="Male">Male</option>
+        <option value="Non-Binary">Non-Binary</option>
+        <option value="Third Gender">Third Gender</option>
+        <option value="Trans Man">Trans Man</option>
+        <option value="Trans Woman">Trans Woman</option>
+        <option value="Transgender">Transgender</option>
+        <option value="Travestite">Travestite</option>
+        <option value="Two-Spirit">Two-Spirit</option>
+        <option value="Prefer not to answer">Prefer not to answer</option>
+
+      </select><br>
+      <br>
+
+      <label for="pronouns">Pronouns:</label>
+      <select id="pronouns" name="pronouns" required>
+        <option value="He/Him">He/Him</option>
+        <option value="She/Her">She/Her</option>
+        <option value="They/Them">They/Them</option>
+        <option value="Ze/Hir">Ze/Hir</option>
+        <option value="Prefer not to answer">Prefer not to answer</option>
+
+      </select><br>
+      <br>
+
+      <label for="location">Location:</label>
+      <select id="location" name="location" required>
+        <option value="Africa">Africa</option>
+        <option value="Asia">Asia</option>
+        <option value="Australia">Australia</option>
+        <option value="Canada">Canada</option>
+        <option value="Europe">Europe</option>
+        <option value="North America">North America</option>
+        <option value="South America">South America</option>
+        <option value="UK">UK</option>
+        <option value="Prefer not to answer">Prefer not to answer</option>
+      </select><br>
+      <br>
+
+      <label for="sexualorientation">Sexual Orientation:</label>
+      <select id="sexualorientation" name="sexualorientation" required>
+        <option value="Asexual">Asexual</option>
+        <option value="Autosexual">Autosexual</option>
+        <option value="Bisexual">Bisexual</option>
+        <option value="Demisexual">Demisexual</option>
+        <option value="Heterosexual">Heterosexual</option>
+        <option value="Homosexual">Homosexual</option>
+        <option value="Omnisexual">Omnisexual</option>
+        <option value="Pansexual">Pansexual</option>
+        <option value="Skoliosexual">Skoliosexual</option>
+        <option value="Spectrasexual">Spectrasexual</option>
+        <option value="Prefer not to answer">Prefer not to answer</option>
+  
+      </select><br>
+      <br>
+
+
+      <label for="chastityExperience">What experience do you have with chastity?</label>
+      <textarea id="chastityExperience" name="chastityExperience" ></textarea><br>
+      <br>
+
+      <label for="sessionLock">What is your longest/average session/lock?</label>
+      <textarea id="sessionLock" name="sessionLock" ></textarea><br>
+      <br>
+
+      <label for="kinksandfetishes">What kinks/fetishes do you have?</label>
+      <textarea id="kinksandfetishes" name="kinksandfetishes" ></textarea><br>
+      <br>
+
+      <label for="limits">Soft/hard limits?</label>
+      <textarea id="limits" name="limits" ></textarea><br>
+      <br>
+
+      
+      <label for="keyholderPreferences">What are you looking for in a keyholder?</label>
+      <textarea id="keyholderPreferences" name="keyholderPreferences" ></textarea><br>
+      <br>
+      
+
+      <label for="keyholdergender">Do you prefer a male or female keyholder?</label><br>
+      <input type="radio" id="keyholdergender" name="keyholdergender" value="Male">
+      <label for="keyholdergender">Male</label><br>
+      <input type="radio" id="keyholdergender" name="keyholdergender" value="Female">
+      <label for="keyholdergender">Female</label><br>
+      <input type="radio" id="keyholdergender" name="keyholdergender" value="Prefer not to answer">
+      <label for="keyholdergender">Prefer not to answer</label><br>
+      <br>
+
+
+      <label for="areyoutintotasks">Are you into tasks?</label><br>
+      <input type="radio" id="areyoutintotasks" name="areyoutintotasks" value="Yes">
+      <label for="areyoutintotasks">Yes</label><br>
+      <input type="radio" id="areyoutintotasks" name="areyoutintotasks" value="No">
+      <label for="areyoutintotasks">No</label><br>
+      <input type="radio" id="areyoutintotasks" name="areyoutintotasks" value="Sometimes">
+      <label for="areyoutintotasks">Sometimes</label><br>
+      <input type="radio" id="areyoutintotasks" name="areyoutintotasks" value="Prefer to talk with keyholder about this">
+      <label for="areyoutintotasks">Prefer to talk with keyholder about this</label><br>
+      <br>
+
+      <label for="areyouinterestedinfindom">Are you interested in findom?</label><br>
+      <input type="radio" id="areyouinterestedinfindom" name="areyouinterestedinfindom" value="Yes">
+      <label for="areyouinterestedinfindom">Yes</label><br>
+      <input type="radio" id="areyouinterestedinfindom" name="areyouinterestedinfindom" value="No">
+      <label for="areyouinterestedinfindom">No</label><br>
+      <br>
+
+      <label for="anyextranote">Any other notes?</label>
+      <textarea id="anyextranote" name="anyextranote" ></textarea><br>
+      <br>
+
+
+
+
+  
+      <button type="submit">Generate PDF</button>
+    </form>
+  </div>
+
+  <%- include('footer') %>
+
+  <script src="/script.js"></script>
+  
+</body>
+</html>

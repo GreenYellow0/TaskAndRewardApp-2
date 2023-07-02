@@ -391,6 +391,11 @@ app.get('/basic-questions', (req, res) => {
   res.render('basic-questions', { user: req.user });
 });
 
+app.get('/looking-for-keyholder-questions', (req, res) => {
+  res.render('looking-for-keyholder-questions');
+});
+
+
 
 app.post('/saveCageAlarm', (req, res) => {
   const userId = req.user._id;
@@ -514,7 +519,7 @@ app.get('/cage-alarm-log', (req, res) => {
 
 
 // Define route for generating the PDF file
-app.post('/generate-pdf', (req, res) => {
+app.post('/generate-pdf-basic', (req, res) => {
   const doc = new PDFDocument();
 
   // Set the response headers for PDF file
@@ -528,18 +533,36 @@ app.post('/generate-pdf', (req, res) => {
 const imagePath = path.join(__dirname, 'public', 'images', 'LOGO-removebg-preview.png');
 doc.image(imagePath, doc.page.width - 100, 30, { width: 75 });
 
+// Load and embed the background image
+const backgroundImagePath = path.join(__dirname, 'public', 'images', 'SAMPLE_BETA_TEST1.png');
+doc.image(backgroundImagePath, 0, 0, { width: doc.page.width, height: doc.page.height });
 
 // Write the questions and answers to the PDF document
 doc.fontSize(16).text('Basic Questions:', { underline: true });
 
-// Format the user-inputted answers
-doc.font('Helvetica').fontSize(12).text('Username:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.name}`);
-doc.font('Helvetica').fontSize(12).text('Gender:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.gender}`);
-doc.font('Helvetica').fontSize(12).text('Country:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.country}`);
-doc.font('Helvetica').fontSize(12).text('Longest In Chastity:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.chastityduration}`);
-doc.font('Helvetica').fontSize(12).text('Type of chastity device you own:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.chastitydeviceown}`);
-
-
+  // Format the user-inputted answers
+  doc.font('Helvetica').fontSize(12).text('Username:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.name}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('Gender:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.gender}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('Location:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.location}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('Longest In Chastity:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.chastityduration}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('How long have you been practicing chastity:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.howlongpracticingchastity}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('Are you a keyholder or lockee:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.keyholderlockee}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('Type of chastity device you own:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.chastitydeviceown}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('How often do you engage in chastity play:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.howoftendoyouengageinchastityplay}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('What impact has chastity had on your sexual desire and arousal:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.whatimpacthaschastityhadonyoursexualdesireandarousal}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('How important is it for you to have a keyholder in your chastity journey:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.howimportantisitforyoutohaveakeyholderinyourchastityjourney}`);
+  doc.moveDown();
+  doc.font('Helvetica').fontSize(12).text('Would you recommend chastity to others interested in exploring it:', { continued: true }).font('Helvetica-Bold').text(` ${req.body.wouldyourecommendchastitytoothersinterestedinexploringit}`);
+  doc.moveDown();
 
 
 // Reset the font to the default
@@ -555,6 +578,79 @@ doc.lineWidth(1).moveTo(doc.x, underlineY).lineTo(doc.x + doc.widthOfString('Gen
 doc.end();
 
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Define route for generating the PDF file
+app.post('/generate-pdf-looking-for-keyholder', (req, res) => {
+  const doc = new PDFDocument();
+
+  // Set the response headers for PDF file
+  res.setHeader('Content-Type', 'application/pdf; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="looking-for-keyholder-${Date.now()}.pdf"`);
+
+  // Pipe the PDF document to the response
+  doc.pipe(res);
+
+  // Load and embed the image
+  const imagePath = path.join(__dirname, 'public', 'images', 'LOGO-removebg-preview.png');
+  doc.image(imagePath, doc.page.width - 100, 30, { width: 75 });
+
+  // Load and embed the background image
+  const backgroundImagePath = path.join(__dirname, 'public', 'images', 'SAMPLE_BETA_TEST1.png');
+  doc.image(backgroundImagePath, 0, 0, { width: doc.page.width, height: doc.page.height });
+
+// Write the questions and answers to the PDF document
+doc.fontSize(16).text('Looking For Keyholder Questions:', { underline: true });
+
+// Format the user-inputted answers
+const formatAnswer = (answer) => answer.replace(/[\r\n]+/g, ' ');
+
+doc.font('Helvetica').fontSize(12).text('Name:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.name)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Gender:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.gender)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Pronouns:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.pronouns)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Location:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.location)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Sexual Orientation:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.sexualorientation)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('What experience do you have with chastity:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.chastityExperience)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('What is your longest/average session/lock:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.sessionLock)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('What kinks/fetishes do you have:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.kinksandfetishes)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Soft/hard limits:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.limits)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('What are you looking for in a keyholder:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.keyholderPreferences)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Do you prefer a male or female keyholder:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.keyholdergender)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Are you into tasks:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.areyoutintotasks)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Are you Interested in findom:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.areyouinterestedinfindom)}`);
+doc.moveDown();
+doc.font('Helvetica').fontSize(12).text('Any extra notes:', { continued: true }).font('Helvetica-Bold').text(` ${formatAnswer(req.body.anyextranote)}`);
+doc.moveDown();
+
+
+
+
+
+  // Reset the font to the default
+  doc.font('Helvetica').fontSize(12);
+
+  // Add the "Generated on the ChastityLogHub website" line with underline
+  doc.moveDown().fontSize(10).text('Generated on the ChastityLogHub website');
+  const underlineY = doc.y + 3; // Adjust the value to position the underline appropriately
+  doc.lineWidth(1).moveTo(doc.x, underlineY).lineTo(doc.x + doc.widthOfString('Generated on the ChastityLogHub website'), underlineY).stroke();
+
+  // Finalize the PDF document
+  doc.end();
+});
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

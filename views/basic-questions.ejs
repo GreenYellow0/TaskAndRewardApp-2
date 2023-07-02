@@ -10,16 +10,18 @@
     form#questionForm input.name-input {
       width: 100px; /* Adjust the width as per your preference */
     }
-    .container-normal {
-      padding-top: 2%;
-    }
+
   </style>
 </head>
 <body>
   <%- include('header') %>
 
   <div class="container-normal">
-    <form id="questionForm" method="POST" action="/generate-pdf">
+    <h2>Basic Questions</h2>
+  </div>
+
+  <div class="container-normal">
+    <form id="questionForm" method="POST" action="/generate-pdf-basic">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" class="name-input" required><br>
   
@@ -27,23 +29,24 @@
       <select id="gender" name="gender" required>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
-        <option value="None-binary">None-Binary</option>
+        <option value="None-binary">Non-Binary</option>
         <option value="PreferNotToTell">Prefer not to tell</option>
       </select><br>
       <br>
 
-      <label for="country">Country:</label>
-      <select id="country" name="country" required>
+      <label for="location">Location:</label>
+      <select id="location" name="location" required>
         <option value="Africa">Africa</option>
         <option value="Asia">Asia</option>
         <option value="Australia">Australia</option>
         <option value="Canada">Canada</option>
         <option value="Europe">Europe</option>
+        <option value="UK">UK</option>
         <option value="USA">USA</option>
       </select><br>
       <br>
 
-      <label for="chastityduration">Longest time in chastity?:</label>
+      <label for="chastityduration">Longest time in chastity?</label>
       <select id="chastityduration" name="chastityduration" required>
         <option value="1 Week">1 Week</option>
         <option value="2 Weeks">2 Weeks</option>
@@ -57,25 +60,95 @@
       </select><br>
       <br>
 
+      
+
+      <label for="howlongpracticingchastity">How long have you been practicing chastity?</label><br>
+      <input type="radio" id="howlongpracticingchastity" name="howlongpracticingchastity" value="Less then 6 months">
+      <label for="howlongpracticingchastity">Less then 6 months</label><br>
+      <input type="radio" id="howlongpracticingchastity" name="howlongpracticingchastity" value="Between 6 and 12 months">
+      <label for="howlongpracticingchastity">Between 6 and 12 months</label><br>
+      <input type="radio" id="howlongpracticingchastity" name="howlongpracticingchastity" value="More then a year">
+      <label for="howlongpracticingchastity">More then a year</label><br>
+      <input type="radio" id="howlongpracticingchastity" name="howlongpracticingchastity" value="More then 2 years">
+      <label for="howlongpracticingchastity">More then 2 years</label><br>
+      <input type="radio" id="howlongpracticingchastity" name="howlongpracticingchastity" value="More then 6 years">
+      <label for="howlongpracticingchastity">More then 6 years</label><br>
+      <br>
+
+
       <!-- Radio Input Only 1 answer-->
 
-<!--      <label for="chastityduration">Longest time in chastity ?:</label><br>
-      <input type="radio" id="chastityduration" name="chastityduration" value="1">
-      <label for="chastityduration">Sports</label><br>
-      <input type="radio" id="chastityduration" name="chastityduration" value="Music">
-      <label for="chastityduration">Music</label><br>
-      <input type="radio" id="chastityduration" name="chastityduration" value="Art">
-      <label for="chastityduration">Art</label><br>-->
+    <label for="keyholderlockee">Are you a keyholder or a lockee?</label><br>
+      <input type="radio" id="keyholderlockee" name="keyholderlockee" value="Keyholder">
+      <label for="keyholderlockee">Keyholder</label><br>
+      <input type="radio" id="keyholderlockee" name="keyholderlockee" value="Lockee">
+      <label for="keyholderlockee">Lockee</label><br>
+      <input type="radio" id="keyholderlockee" name="keyholderlockee" value="Both">
+      <label for="keyholderlockee">Both</label><br>
+      <br>
 
-      <!--Checkbox multiple answers-->
   
-      <label>What type of chastity device do you own?:</label><br>
+      <label>What type of chastity device do you own?</label><br>
       <input type="checkbox" id="chastitydeviceown" name="chastitydeviceown" value="Chastity Cage">
       <label for="chastitydeviceown">Chastity Cage</label><br>
       <input type="checkbox" id="chastitydeviceown" name="chastitydeviceown" value="Chastity Belt">
       <label for="chastitydeviceown">Chastity Belt</label><br>
       <input type="checkbox" id="chastitydeviceown" name="chastitydeviceown" value="None">
       <label for="chastitydeviceown">None</label><br>
+      <br>
+
+      <label for="howoftendoyouengageinchastityplay">How often do you engage in chastity play?</label><br>
+      <input type="radio" id="howoftendoyouengageinchastityplay" name="howoftendoyouengageinchastityplay" value="Daily">
+      <label for="howoftendoyouengageinchastityplay">Daily</label><br>
+      <input type="radio" id="howoftendoyouengageinchastityplay" name="howoftendoyouengageinchastityplay" value="Several times a week">
+      <label for="howoftendoyouengageinchastityplay">Several times a week</label><br>
+      <input type="radio" id="howoftendoyouengageinchastityplay" name="howoftendoyouengageinchastityplay" value="Once a week">
+      <label for="howoftendoyouengageinchastityplay">Once a week</label><br>
+      <input type="radio" id="howoftendoyouengageinchastityplay" name="howoftendoyouengageinchastityplay" value="Occasionally">
+      <label for="howoftendoyouengageinchastityplay">Occasionally</label><br>
+      <input type="radio" id="howoftendoyouengageinchastityplay" name="howoftendoyouengageinchastityplay" value="Rarely">
+      <label for="howoftendoyouengageinchastityplay">Rarely</label><br>
+      <input type="radio" id="howoftendoyouengageinchastityplay" name="howoftendoyouengageinchastityplay" value="Prefer not to answer">
+      <label for="howoftendoyouengageinchastityplay">Prefer not to answer</label><br>
+      <br>
+
+      <label for="whatimpacthaschastityhadonyoursexualdesireandarousal">What impact has chastity had on your sexual desire and arousal?</label><br>
+      <input type="radio" id="whatimpacthaschastityhadonyoursexualdesireandarousal" name="whatimpacthaschastityhadonyoursexualdesireandarousal" value="Increased desire and arousal">
+      <label for="whatimpacthaschastityhadonyoursexualdesireandarousal">Increased desire and arousal</label><br>
+      <input type="radio" id="whatimpacthaschastityhadonyoursexualdesireandarousal" name="whatimpacthaschastityhadonyoursexualdesireandarousal" value="Decreased desire and arousal">
+      <label for="whatimpacthaschastityhadonyoursexualdesireandarousal">Decreased desire and arousal</label><br>
+      <input type="radio" id="whatimpacthaschastityhadonyoursexualdesireandarousal" name="whatimpacthaschastityhadonyoursexualdesireandarousal" value="No noticeable change">
+      <label for="whatimpacthaschastityhadonyoursexualdesireandarousal">No noticeable change</label><br>
+      <input type="radio" id="whatimpacthaschastityhadonyoursexualdesireandarousal" name="whatimpacthaschastityhadonyoursexualdesireandarousal" value="Fluctuates depending on circumstances">
+      <label for="whatimpacthaschastityhadonyoursexualdesireandarousal">Fluctuates depending on circumstances</label><br>
+      <input type="radio" id="whatimpacthaschastityhadonyoursexualdesireandarousal" name="whatimpacthaschastityhadonyoursexualdesireandarousal" value="Prefer not to answer">
+      <label for="whatimpacthaschastityhadonyoursexualdesireandarousal">Prefer not to answer</label><br>
+      <br>
+
+      <label for="howimportantisitforyoutohaveakeyholderinyourchastityjourney">How important is it for you to have a keyholder in your chastity journey?</label><br>
+      <input type="radio" id="howimportantisitforyoutohaveakeyholderinyourchastityjourney" name="howimportantisitforyoutohaveakeyholderinyourchastityjourney" value="Essential">
+      <label for="howimportantisitforyoutohaveakeyholderinyourchastityjourney">Essential</label><br>
+      <input type="radio" id="howimportantisitforyoutohaveakeyholderinyourchastityjourney" name="howimportantisitforyoutohaveakeyholderinyourchastityjourney" value="Nice to have">
+      <label for="howimportantisitforyoutohaveakeyholderinyourchastityjourney">Nice to have</label><br>
+      <input type="radio" id="howimportantisitforyoutohaveakeyholderinyourchastityjourney" name="howimportantisitforyoutohaveakeyholderinyourchastityjourney" value="Not necessary">
+      <label for="howimportantisitforyoutohaveakeyholderinyourchastityjourney">Not necessary</label><br>
+      <input type="radio" id="howimportantisitforyoutohaveakeyholderinyourchastityjourney" name="howimportantisitforyoutohaveakeyholderinyourchastityjourney" value="Prefer not to answer">
+      <label for="howimportantisitforyoutohaveakeyholderinyourchastityjourney">Prefer not to answer</label><br>
+      <br>
+
+      <label for="wouldyourecommendchastitytoothersinterestedinexploringit">Would you recommend chastity to others interested in exploring it?</label><br>
+      <input type="radio" id="wouldyourecommendchastitytoothersinterestedinexploringit" name="wouldyourecommendchastitytoothersinterestedinexploringit" value="Absolutely">
+      <label for="wouldyourecommendchastitytoothersinterestedinexploringit">Absolutely</label><br>
+      <input type="radio" id="wouldyourecommendchastitytoothersinterestedinexploringit" name="wouldyourecommendchastitytoothersinterestedinexploringit" value="Yes, with caution">
+      <label for="wouldyourecommendchastitytoothersinterestedinexploringit">Yes, with caution</label><br>
+      <input type="radio" id="wouldyourecommendchastitytoothersinterestedinexploringit" name="wouldyourecommendchastitytoothersinterestedinexploringit" value="Not sure">
+      <label for="wouldyourecommendchastitytoothersinterestedinexploringit">Not sure</label><br>
+      <input type="radio" id="wouldyourecommendchastitytoothersinterestedinexploringit" name="wouldyourecommendchastitytoothersinterestedinexploringit" value="No, not recommended">
+      <label for="wouldyourecommendchastitytoothersinterestedinexploringit">No, not recommended</label><br>
+
+      <br>
+
+      
 
   
       <button type="submit">Generate PDF</button>
