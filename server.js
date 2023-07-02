@@ -23,14 +23,6 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 
 
-  // Set up the models and schemas
-const questionSchema = new mongoose.Schema({
-  question: String,
-  type: String
-});
-
-const Question = mongoose.model('Question', questionSchema);
-
 
 
   const orgasmSchema = new mongoose.Schema({
