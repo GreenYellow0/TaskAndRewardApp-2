@@ -5,17 +5,90 @@
 </head>
 <body>
     <h1>Shared Tar Lock</h1>
-    <h2>Tar Lock Name: <span id="tarlockName"></span></h2>
+    <h2>Tar Lock Name: <span id="tarlockName"><%= tarLock.name %></span></h2>
 
     <h3>Tasks:</h3>
-    <ul id="taskList"></ul>
+    <ul id="taskList">
+        <% for (let i = 0; i < tarLock.tasks.length; i++) { %>
+            <li>
+                <%= tarLock.tasks[i].name %>: <%= tarLock.tasks[i].coins %> coins
+                <button onclick="completeTask(<%= i %>)">Complete</button>
+            </li>
+        <% } %>
+    </ul>
 
     <h3>Rewards:</h3>
-    <ul id="rewardList"></ul>
+    <ul id="rewardList">
+        <% for (let i = 0; i < tarLock.rewards.length; i++) { %>
+            <li>
+                <%= tarLock.rewards[i].name %>: <%= tarLock.rewards[i].coins %> coins
+                <button onclick="buyReward(<%= i %>)">Buy</button>
+            </li>
+        <% } %>
+    </ul>
 
     <script>
-        // Fetch the tar lock data from the server and update the page accordingly
-        // You'll need to implement this functionality in the backend
+        const tarLockId = "<%= tarLock._id %>";
+
+        function completeTask(taskIndex) {
+            fetch("/completeTask", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tarLockId: tarLockId,
+                    taskIndex: taskIndex
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the completed task from the page
+                    const taskItem = document.querySelector(`#taskList li:nth-child(${taskIndex + 1})`);
+                    taskItem.remove();
+
+                    // Update the user's coins display (if applicable)
+                    const coinsDisplay = document.getElementById("coinsDisplay");
+                    if (coinsDisplay) {
+                        coinsDisplay.textContent = data.coins;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+
+        function buyReward(rewardIndex) {
+            fetch("/buyReward", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tarLockId: tarLockId,
+                    rewardIndex: rewardIndex
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the bought reward from the page
+                    const rewardItem = document.querySelector(`#rewardList li:nth-child(${rewardIndex + 1})`);
+                    rewardItem.remove();
+
+                    // Update the user's coins display (if applicable)
+                    const coinsDisplay = document.getElementById("coinsDisplay");
+                    if (coinsDisplay) {
+                        coinsDisplay.textContent = data.coins;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
     </script>
 </body>
 </html>

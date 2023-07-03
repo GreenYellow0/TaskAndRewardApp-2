@@ -13,20 +13,21 @@
         <div id="taskContainer">
             <div>
                 <label for="taskName">Task Name:</label>
-                <input type="text" class="taskName" name="tasks[][name]" required>
+                <input type="text" class="taskName" name="taskNames[]" required>
                 <label for="taskCoins">Coins:</label>
-                <input type="number" class="taskCoins" name="tasks[][coins]" required>
+                <input type="number" class="taskCoins" name="taskCoins[]" required>
             </div>
         </div>
         <button type="button" onclick="addNewTask()">Add New Task</button><br><br>
+        
 
         <h2>Rewards:</h2>
         <div id="rewardContainer">
             <div>
                 <label for="rewardName">Reward Name:</label>
-                <input type="text" class="rewardName" name="rewards[][name]" required>
+                <input type="text" class="rewardName" name="rewardNames[]" required>
                 <label for="rewardCoins">Coins:</label>
-                <input type="number" class="rewardCoins" name="rewards[][coins]" required>
+                <input type="number" class="rewardCoins" name="rewardCoins[]" required>
             </div>
         </div>
         <button type="button" onclick="addNewReward()">Add New Reward</button><br><br>
@@ -35,29 +36,64 @@
     </form>
 
     <script>
+        let taskId = 1; // Unique ID for task inputs
+        let rewardId = 1; // Unique ID for reward inputs
+      
         function addNewTask() {
-            var taskContainer = document.getElementById("taskContainer");
-            var newTaskDiv = document.createElement("div");
-            newTaskDiv.innerHTML = `
-                <label for="taskName">Task Name:</label>
-                <input type="text" class="taskName" name="tasks[][name]" required>
-                <label for="taskCoins">Coins:</label>
-                <input type="number" class="taskCoins" name="tasks[][coins]" required>
-            `;
-            taskContainer.appendChild(newTaskDiv);
+          const taskContainer = document.getElementById("taskContainer");
+          const newTaskDiv = document.createElement("div");
+          const taskIdAttr = `task-${taskId}`; // Unique ID for task input fields
+          
+          const taskNameInput = document.createElement("input");
+          taskNameInput.type = "text";
+          taskNameInput.classList.add("taskName");
+          taskNameInput.name = `taskNames[]`;
+          taskNameInput.id = `${taskIdAttr}-name`;
+          taskNameInput.required = true;
+          
+          const taskCoinsInput = document.createElement("input");
+          taskCoinsInput.type = "number";
+          taskCoinsInput.classList.add("taskCoins");
+          taskCoinsInput.name = `taskCoins[]`;
+          taskCoinsInput.id = `${taskIdAttr}-coins`;
+          taskCoinsInput.required = true;
+          
+          newTaskDiv.appendChild(document.createTextNode("Task Name: "));
+          newTaskDiv.appendChild(taskNameInput);
+          newTaskDiv.appendChild(document.createTextNode(" Coins: "));
+          newTaskDiv.appendChild(taskCoinsInput);
+          
+          taskContainer.appendChild(newTaskDiv);
+          taskId++;
         }
-
+      
         function addNewReward() {
-            var rewardContainer = document.getElementById("rewardContainer");
-            var newRewardDiv = document.createElement("div");
-            newRewardDiv.innerHTML = `
-                <label for="rewardName">Reward Name:</label>
-                <input type="text" class="rewardName" name="rewards[][name]" required>
-                <label for="rewardCoins">Coins:</label>
-                <input type="number" class="rewardCoins" name="rewards[][coins]" required>
-            `;
-            rewardContainer.appendChild(newRewardDiv);
+          const rewardContainer = document.getElementById("rewardContainer");
+          const newRewardDiv = document.createElement("div");
+          const rewardIdAttr = `reward-${rewardId}`; // Unique ID for reward input fields
+          
+          const rewardNameInput = document.createElement("input");
+          rewardNameInput.type = "text";
+          rewardNameInput.classList.add("rewardName");
+          rewardNameInput.name = `rewardNames[]`;
+          rewardNameInput.id = `${rewardIdAttr}-name`;
+          rewardNameInput.required = true;
+          
+          const rewardCoinsInput = document.createElement("input");
+          rewardCoinsInput.type = "number";
+          rewardCoinsInput.classList.add("rewardCoins");
+          rewardCoinsInput.name = `rewardCoins[]`;
+          rewardCoinsInput.id = `${rewardIdAttr}-coins`;
+          rewardCoinsInput.required = true;
+          
+          newRewardDiv.appendChild(document.createTextNode("Reward Name: "));
+          newRewardDiv.appendChild(rewardNameInput);
+          newRewardDiv.appendChild(document.createTextNode(" Coins: "));
+          newRewardDiv.appendChild(rewardCoinsInput);
+          
+          rewardContainer.appendChild(newRewardDiv);
+          rewardId++;
         }
-    </script>
+      </script>
 </body>
 </html>

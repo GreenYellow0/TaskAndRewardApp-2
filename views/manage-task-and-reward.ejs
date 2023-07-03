@@ -17,7 +17,7 @@
         function redirectToCreateTarLock() {
             window.location.href = "/createtarlock";
         }
-
+    
         // Function to remove a tar lock
         function removeTarLock(tarLockId) {
             fetch(`/api/tarlocks/${tarLockId}`, { method: "DELETE" })
@@ -35,15 +35,28 @@
                     console.error(error);
                 });
         }
-
+    
         // Function to share a tar lock
         function shareTarLock(tarLockId) {
             // Generate a unique URL for sharing
             const shareUrl = `/tarlocks/${tarLockId}`;
-            // Perform any action to share the URL, such as copying it to the clipboard or opening a share dialog
-            console.log("Share URL:", shareUrl);
+    
+            // Create a temporary input element to copy the URL to the clipboard
+            const tempInput = document.createElement("input");
+            tempInput.value = shareUrl;
+            document.body.appendChild(tempInput);
+    
+            // Copy the URL to the clipboard
+            tempInput.select();
+            document.execCommand("copy");
+    
+            // Remove the temporary input element
+            document.body.removeChild(tempInput);
+    
+            // Provide a visual indication to the user
+            alert("Tar lock URL copied to clipboard!");
         }
-
+    
         // Fetch the user's tar locks from the server
         fetch("/api/tarlocks")
             .then(response => response.json())
@@ -52,44 +65,44 @@
                 data.tarLocks.forEach(tarLock => {
                     const listItem = document.createElement("li");
                     listItem.setAttribute("data-id", tarLock._id); // Add the data-id attribute
-
+    
                     const nameHeader = document.createElement("h3");
                     nameHeader.textContent = tarLock.name;
-
+    
                     const taskListHeader = document.createElement("h4");
                     taskListHeader.textContent = "Tasks:";
-
+    
                     const taskList = document.createElement("ul");
                     tarLock.tasks.forEach(task => {
                         const taskItem = document.createElement("li");
                         taskItem.textContent = `${task.name}: ${task.coins} coins`;
                         taskList.appendChild(taskItem);
                     });
-
+    
                     const rewardListHeader = document.createElement("h4");
                     rewardListHeader.textContent = "Rewards:";
-
+    
                     const rewardList = document.createElement("ul");
                     tarLock.rewards.forEach(reward => {
                         const rewardItem = document.createElement("li");
                         rewardItem.textContent = `${reward.name}: ${reward.coins} coins`;
                         rewardList.appendChild(rewardItem);
                     });
-
+    
                     const removeButton = document.createElement("button");
                     removeButton.textContent = "Remove";
                     // Add a click event listener to the remove button
                     removeButton.addEventListener("click", () => {
                         removeTarLock(tarLock._id);
                     });
-
+    
                     const shareButton = document.createElement("button");
                     shareButton.textContent = "Share";
                     // Add a click event listener to the share button
                     shareButton.addEventListener("click", () => {
                         shareTarLock(tarLock._id);
                     });
-
+    
                     listItem.appendChild(nameHeader);
                     listItem.appendChild(taskListHeader);
                     listItem.appendChild(taskList);
@@ -104,5 +117,6 @@
                 console.error(error);
             });
     </script>
+    
 </body>
 </html>
