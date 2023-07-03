@@ -807,24 +807,20 @@ app.post('/completeTask', async (req, res) => {
     // Deduct the task's coins from the user's coins field
     if (user.coins >= task.coins) {
       user.coins -= task.coins;
+
+      // Mark the task as completed
+      task.completed = true;
+
+      await user.save();
+      res.json({ success: true, coins: user.coins });
     } else {
       res.json({ success: false, error: "Insufficient coins" });
-      return;
     }
-
-    // Mark the task as completed
-    task.completed = true;
-
-    await user.save();
-    res.json({ success: true, coins: user.coins });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error completing task" });
   }
 });
-
-
-
 
 app.post('/buyReward', async (req, res) => {
   const { tarLockId, rewardIndex } = req.body;
@@ -866,6 +862,8 @@ app.post('/buyReward', async (req, res) => {
     res.status(500).json({ error: "Error buying reward" });
   }
 });
+
+
 
 
 

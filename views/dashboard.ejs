@@ -12,12 +12,13 @@
 
   <div class="container-normal">
     <h1>Welcome, <%= user ? user.username : '' %>!</h1>
+    <% if (user) { %>
+      <p>Your coins: <%= user.coins %></p>
+    <% } %>
+  </div>
 
-  
   <%- include('footer') %>
 
   <script src="/script.js"></script>
- 
-
 </body>
 </html>
