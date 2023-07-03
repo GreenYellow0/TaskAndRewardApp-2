@@ -24,21 +24,28 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 
 
-
   const orgasmSchema = new mongoose.Schema({
     type: String,
     date: { type: Date, default: Date.now },
     time: { type: Date, default: () => Date.now() }
   });
-
-
+  
   const cageAlarmSchema = new mongoose.Schema({
     type: String,
     date: { type: Date, default: Date.now },
     time: Date
   });
-
-
+  
+  const taskSchema = new mongoose.Schema({
+    name: String,
+    coins: Number,
+  });
+  
+  const rewardSchema = new mongoose.Schema({
+    name: String,
+    coins: Number,
+  });
+  
   const userSchema = new mongoose.Schema({
     username: { type: String, unique: true },
     password: String,
@@ -46,11 +53,19 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     notes: [String],
     orgasms: [orgasmSchema],
     cageAlarms: [cageAlarmSchema],
-
+    tarLocks: [{
+      name: String,
+      tasks: [taskSchema],
+      rewards: [rewardSchema],
+    }],
   });
   
   userSchema.plugin(passportLocalMongoose);
   const User = mongoose.model('User', userSchema);
+  
+ 
+
+  
   
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -646,6 +661,89 @@ doc.moveDown();
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.get('/createtarlock', (req, res) => {
+  res.render('createtarlock', { user: req.user });
+});
+
+app.get('/shared', (req, res) => {
+  res.render('shared', { user: req.user });
+});
+
+app.get('/manage-task-and-reward', async (req, res) => {
+  try {
+    // Retrieve the user's tar locks from the database
+    const user = await User.findById(req.user._id).exec();
+    res.render('manage-task-and-reward', { user: req.user, tarLocks: user.tarLocks });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error retrieving user's tar locks");
+  }
+});
+
+app.post("/savetarlock", (req, res) => {
+  const tarlockName = req.body.tarlockName;
+
+  const tasks = req.body.tasks.map((task) => {
+    return {
+      name: task.name, // Retrieve the task name directly
+      coins: parseInt(task.coins) // Parse the task coins to an integer
+    };
+  });
+
+  const rewards = req.body.rewards.map((reward) => {
+    return {
+      name: reward.name, // Retrieve the reward name directly
+      coins: parseInt(reward.coins) // Parse the reward coins to an integer
+    };
+  });
+
+  const tarlock = {
+    name: tarlockName,
+    tasks: tasks,
+    rewards: rewards
+  };
+
+  User.findByIdAndUpdate(req.user._id, { $push: { tarLocks: tarlock } })
+    .then(() => {
+      // Redirect to the manage-task-and-reward page
+      res.redirect("/manage-task-and-reward");
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error saving tar lock: " + err.message);
+    });
+});
+
+
+app.get('/api/tarlocks', async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).exec();
+    res.json({ tarLocks: user.tarLocks });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error retrieving user's tar locks" });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

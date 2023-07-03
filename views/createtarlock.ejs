@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Tar Lock</title>
+</head>
+<body>
+    <h1>Create Tar Lock</h1>
+    <form action="/savetarlock" method="POST">
+        <label for="tarlockName">Tar Lock Name:</label>
+        <input type="text" id="tarlockName" name="tarlockName" required><br><br>
+
+        <h2>Tasks:</h2>
+        <div id="taskContainer">
+            <div>
+                <label for="taskName">Task Name:</label>
+                <input type="text" class="taskName" name="tasks[][name]" required>
+                <label for="taskCoins">Coins:</label>
+                <input type="number" class="taskCoins" name="tasks[][coins]" required>
+            </div>
+        </div>
+        <button type="button" onclick="addNewTask()">Add New Task</button><br><br>
+
+        <h2>Rewards:</h2>
+        <div id="rewardContainer">
+            <div>
+                <label for="rewardName">Reward Name:</label>
+                <input type="text" class="rewardName" name="rewards[][name]" required>
+                <label for="rewardCoins">Coins:</label>
+                <input type="number" class="rewardCoins" name="rewards[][coins]" required>
+            </div>
+        </div>
+        <button type="button" onclick="addNewReward()">Add New Reward</button><br><br>
+
+        <button type="submit">Save Tar Lock</button>
+    </form>
+
+    <script>
+        function addNewTask() {
+            var taskContainer = document.getElementById("taskContainer");
+            var newTaskDiv = document.createElement("div");
+            newTaskDiv.innerHTML = `
+                <label for="taskName">Task Name:</label>
+                <input type="text" class="taskName" name="tasks[][name]" required>
+                <label for="taskCoins">Coins:</label>
+                <input type="number" class="taskCoins" name="tasks[][coins]" required>
+            `;
+            taskContainer.appendChild(newTaskDiv);
+        }
+
+        function addNewReward() {
+            var rewardContainer = document.getElementById("rewardContainer");
+            var newRewardDiv = document.createElement("div");
+            newRewardDiv.innerHTML = `
+                <label for="rewardName">Reward Name:</label>
+                <input type="text" class="rewardName" name="rewards[][name]" required>
+                <label for="rewardCoins">Coins:</label>
+                <input type="number" class="rewardCoins" name="rewards[][coins]" required>
+            `;
+            rewardContainer.appendChild(newRewardDiv);
+        }
+    </script>
+</body>
+</html>

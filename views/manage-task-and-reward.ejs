@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Task and Reward</title>
+</head>
+<body>
+    <h1>Manage Task and Reward</h1>
+    <button onclick="redirectToCreateTarLock()">Create tar lock</button>
+
+    <!-- Display the existing tar locks here -->
+    <h2>Existing Tar Locks:</h2>
+    <ul id="tarLocksList">
+        <!-- Tar locks will be dynamically added here -->
+    </ul>
+
+    <script>
+        function redirectToCreateTarLock() {
+            window.location.href = "/createtarlock";
+        }
+
+        // Function to remove a tar lock
+        function removeTarLock(tarLockId) {
+            fetch(`/api/tarlocks/${tarLockId}`, { method: "DELETE" })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the tar lock element from the list
+                        const tarLockElement = document.querySelector(`li[data-id="${tarLockId}"]`);
+                        if (tarLockElement) {
+                            tarLockElement.remove();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+
+        // Function to share a tar lock
+        function shareTarLock(tarLockId) {
+            // Generate a unique URL for sharing
+            const shareUrl = `/tarlocks/${tarLockId}`;
+            // Perform any action to share the URL, such as copying it to the clipboard or opening a share dialog
+            console.log("Share URL:", shareUrl);
+        }
+
+        // Fetch the user's tar locks from the server
+        fetch("/api/tarlocks")
+            .then(response => response.json())
+            .then(data => {
+                const tarLocksList = document.getElementById("tarLocksList");
+                data.tarLocks.forEach(tarLock => {
+                    const listItem = document.createElement("li");
+                    listItem.setAttribute("data-id", tarLock._id); // Add the data-id attribute
+
+                    const nameHeader = document.createElement("h3");
+                    nameHeader.textContent = tarLock.name;
+
+                    const taskListHeader = document.createElement("h4");
+                    taskListHeader.textContent = "Tasks:";
+
+                    const taskList = document.createElement("ul");
+                    tarLock.tasks.forEach(task => {
+                        const taskItem = document.createElement("li");
+                        taskItem.textContent = `${task.name}: ${task.coins} coins`;
+                        taskList.appendChild(taskItem);
+                    });
+
+                    const rewardListHeader = document.createElement("h4");
+                    rewardListHeader.textContent = "Rewards:";
+
+                    const rewardList = document.createElement("ul");
+                    tarLock.rewards.forEach(reward => {
+                        const rewardItem = document.createElement("li");
+                        rewardItem.textContent = `${reward.name}: ${reward.coins} coins`;
+                        rewardList.appendChild(rewardItem);
+                    });
+
+                    const removeButton = document.createElement("button");
+                    removeButton.textContent = "Remove";
+                    // Add a click event listener to the remove button
+                    removeButton.addEventListener("click", () => {
+                        removeTarLock(tarLock._id);
+                    });
+
+                    const shareButton = document.createElement("button");
+                    shareButton.textContent = "Share";
+                    // Add a click event listener to the share button
+                    shareButton.addEventListener("click", () => {
+                        shareTarLock(tarLock._id);
+                    });
+
+                    listItem.appendChild(nameHeader);
+                    listItem.appendChild(taskListHeader);
+                    listItem.appendChild(taskList);
+                    listItem.appendChild(rewardListHeader);
+                    listItem.appendChild(rewardList);
+                    listItem.appendChild(removeButton);
+                    listItem.appendChild(shareButton);
+                    tarLocksList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+</body>
+</html>
