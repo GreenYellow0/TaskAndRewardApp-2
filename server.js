@@ -59,9 +59,11 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     notes: [String],
     orgasms: [orgasmSchema],
     cageAlarms: [cageAlarmSchema],
-    tarLocks: [tarlockSchema], // Store tar locks as an array within the user schema
-    coins: { type: Number, default: 0 }, // Add a coins field to store the user's coins
+    tarLocks: [tarlockSchema],
+    coins: { type: Number, default: 0 },
+    ownedRewards: [rewardSchema], // Add a field to store the user's owned rewards
   });
+  
   
   userSchema.plugin(passportLocalMongoose);
   const User = mongoose.model('User', userSchema);
@@ -781,46 +783,42 @@ app.get('/tarlocks/:tarLockId', async (req, res) => {
 });
 
 
-
-app.post('/completeTask', async (req, res) => {
-  const { tarLockId, taskIndex } = req.body;
-
+app.post("/completeTask", async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      res.status(404).json({ success: false, error: "User not found" });
-      return;
-    }
+    const tarLockId = req.body.tarLockId;
+    const taskIndex = req.body.taskIndex;
 
-    const tarLock = user.tarLocks.id(tarLockId);
+    const user = await User.findById(req.user._id).exec();
+    const tarLock = user.tarLocks.find(tarLock => tarLock._id.equals(tarLockId));
+
     if (!tarLock) {
-      res.status(404).json({ success: false, error: "Tar lock not found" });
-      return;
+      throw new Error("Tar lock not found");
     }
 
-    const task = tarLock.tasks.id(taskIndex);
-    if (!task) {
-      res.status(404).json({ success: false, error: "Task not found" });
-      return;
+    if (taskIndex < 0 || taskIndex >= tarLock.tasks.length) {
+      throw new Error("Invalid task index");
     }
 
-    // Deduct the task's coins from the user's coins field
-    if (user.coins >= task.coins) {
-      user.coins -= task.coins;
+    const task = tarLock.tasks[taskIndex];
+    const coinsEarned = task.coins;
 
-      // Mark the task as completed
-      task.completed = true;
+    // Update the user's coins
+    user.coins += coinsEarned;
 
-      await user.save();
-      res.json({ success: true, coins: user.coins });
-    } else {
-      res.json({ success: false, error: "Insufficient coins" });
-    }
+    // Remove the completed task
+    tarLock.tasks.splice(taskIndex, 1);
+
+    // Save the updated user and tar lock
+    await user.save();
+
+    res.json({ success: true, coins: user.coins });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error completing task" });
+    res.status(500).json({ error: "Failed to complete task" });
   }
 });
+
+
 
 app.post('/buyReward', async (req, res) => {
   const { tarLockId, rewardIndex } = req.body;
