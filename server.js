@@ -27,12 +27,12 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 
 
-
   const taskSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     title: String,
     coins: Number
   });
+  
   
 
 
@@ -988,6 +988,8 @@ app.post('/complete-task', async (req, res) => {
 });
 
 
+
+
 // Route to render the reward-store.ejs page
 app.get('/reward-store', (req, res) => {
   const user = req.user;
@@ -1015,6 +1017,7 @@ app.post('/buy-reward', async (req, res) => {
 
   res.redirect('/reward-store');
 });
+
 
 
 
