@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+</head>
+<body>
+  <%- include('header') %>
+
+  <h1>Tasks</h1>
+  <% if (user) { %>
+    <% tasks.forEach((task) => { %>
+      <p><%= task.title %> - Coins: <%= task.coins %></p>
+      <% if (completedTaskIds && completedTaskIds.includes(task._id)) { %>
+        <p>Task completed!</p>
+      <% } else { %>
+        <form action="/complete-task" method="POST">
+          <input type="hidden" name="taskId" value="<%= task._id %>">
+          <button type="submit">Complete</button>
+        </form>
+      <% } %>
+    <% }); %>
+  <% } else { %>
+    <p>Please sign in to view tasks.</p>
+  <% } %>
+  
+
+  <%- include('footer') %>
+
+  <script src="/script.js"></script>
+</body>
+</html>

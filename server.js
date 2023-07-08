@@ -14,6 +14,8 @@ const Schema = mongoose.Schema;
 const PDFDocument = require('pdfkit');
 const path = require('path');
 const { ObjectId } = require('mongoose').Types;
+const { Types } = mongoose;
+
 
 
 
@@ -24,6 +26,12 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .catch(err => console.error('Could not connect to MongoDB', err));
 
 
+
+
+  const taskSchema = new mongoose.Schema({
+    title: String,
+    coins: Number
+  });
 
 
   const orgasmSchema = new mongoose.Schema({
@@ -53,6 +61,9 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     tasks: [taskSchema],
     rewards: [rewardSchema],
   });*/
+
+
+
   
   const userSchema = new mongoose.Schema({
     username: { type: String, unique: true },
@@ -61,14 +72,22 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     notes: [String],
     orgasms: [orgasmSchema],
     cageAlarms: [cageAlarmSchema],
+    coins: { type: Number, default: 0 },
 /**    tarLocks: [tarlockSchema],
     coins: { type: Number, default: 0 },
     ownedRewards: [rewardSchema],  */
+    completedTasks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Task'
+      }
+    ]
   });
   
   
   userSchema.plugin(passportLocalMongoose);
   const User = mongoose.model('User', userSchema);
+  const Task = mongoose.model('Task', taskSchema);
   
   
  
@@ -881,18 +900,102 @@ app.post('/buyReward', async (req, res) => {
 
 
 
+// Define tasks and rewards arrays
+const tasks = [
+  {
+    title: 'Task 1',
+    coins: 10
+  },
+  {
+    title: 'Task 2',
+    coins: 20
+  },
+  {
+    title: 'Task 3',
+    coins: 30
+  }
+  // Add more tasks as needed
+];
+
+const rewards = [
+  {
+    title: 'Reward 1',
+    coins: 50
+  },
+  {
+    title: 'Reward 2',
+    coins: 100
+  },
+  {
+    title: 'Reward 3',
+    coins: 150
+  }
+  // Add more rewards as needed
+];
+
+// Route to render the task-and-reward.ejs page
+app.get('/task-and-reward', (req, res) => {
+  const user = req.user;
+  res.render('task-and-reward', { user });
+});
+
+app.get('/tasks', async (req, res) => {
+  const user = req.user;
+  let completedTaskIds = [];
+
+  if (user) {
+    try {
+      const userWithCompletedTasks = await User.findById(user._id).populate('completedTasks');
+
+      completedTaskIds = userWithCompletedTasks.completedTasks.map((task) => task._id.toString());
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  res.render('tasks', { user, tasks, completedTaskIds });
+});
 
 
+// Handle completing a task
+app.post('/complete-task', (req, res) => {
+  const user = req.user;
+  const taskId = req.body.taskId;
 
+  // Find the task in the tasks array based on the taskId
+  const task = tasks.find((task) => task._id === taskId);
 
+  if (task) {
+    // Deduct coins from the user's account and mark the task as completed
+    user.coins += task.coins;
+    // Process the completion logic here
+  }
 
+  res.redirect('/tasks');
+});
 
+// Route to render the reward-store.ejs page
+app.get('/reward-store', (req, res) => {
+  const user = req.user;
+  res.render('reward-store', { user, rewards });
+});
 
+// Handle buying a reward
+app.post('/buy-reward', (req, res) => {
+  const user = req.user;
+  const rewardId = req.body.rewardId;
 
+  // Find the reward in the rewards array based on the rewardId
+  const reward = rewards.find((reward) => reward._id === rewardId);
 
+  if (reward && user.coins >= reward.coins) {
+    // Deduct coins from the user's account and grant the reward
+    user.coins -= reward.coins;
+    // Process the purchase logic here
+  }
 
-
-
+  res.redirect('/reward-store');
+});
 
 
 

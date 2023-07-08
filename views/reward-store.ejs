@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reward Store</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+</head>
+<body>
+  <%- include('header') %>
+
+  <h1>Reward Store</h1>
+  <% if (user) { %>
+    <% rewards.forEach((reward) => { %>
+      <p><%= reward.title %> - Coins: <%= reward.coins %></p>
+      <% if (user.coins >= reward.coins) { %>
+        <form action="/buy-reward" method="POST">
+          <input type="hidden" name="rewardId" value="<%= reward._id %>">
+          <button type="submit">Buy Reward</button>
+        </form>
+      <% } else { %>
+        <p>Not enough coins to buy this reward.</p>
+      <% } %>
+    <% }); %>
+  <% } else { %>
+    <p>Please sign in to view the reward store.</p>
+  <% } %>
+
+  <%- include('footer') %>
+
+  <script src="/script.js"></script>
+</body>
+</html>
