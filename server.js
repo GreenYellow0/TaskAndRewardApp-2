@@ -29,9 +29,11 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 
   const taskSchema = new mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     title: String,
     coins: Number
   });
+  
 
 
   const orgasmSchema = new mongoose.Schema({
@@ -900,38 +902,45 @@ app.post('/buyReward', async (req, res) => {
 
 
 
-// Define tasks and rewards arrays
 const tasks = [
   {
+    _id: new mongoose.Types.ObjectId(),
     title: 'Task 1',
     coins: 10
   },
   {
+    _id: new mongoose.Types.ObjectId(),
     title: 'Task 2',
     coins: 20
   },
   {
+    _id: new mongoose.Types.ObjectId(),
     title: 'Task 3',
     coins: 30
   }
   // Add more tasks as needed
 ];
 
+
 const rewards = [
   {
+    _id: new mongoose.Types.ObjectId(),
     title: 'Reward 1',
     coins: 50
   },
   {
+    _id: new mongoose.Types.ObjectId(),
     title: 'Reward 2',
     coins: 100
   },
   {
+    _id: new mongoose.Types.ObjectId(),
     title: 'Reward 3',
     coins: 150
   }
   // Add more rewards as needed
 ];
+
 
 // Route to render the task-and-reward.ejs page
 app.get('/task-and-reward', (req, res) => {
@@ -957,22 +966,27 @@ app.get('/tasks', async (req, res) => {
 });
 
 
-// Handle completing a task
-app.post('/complete-task', (req, res) => {
+app.post('/complete-task', async (req, res) => {
   const user = req.user;
   const taskId = req.body.taskId;
 
-  // Find the task in the tasks array based on the taskId
-  const task = tasks.find((task) => task._id === taskId);
+  try {
+    // Find the task in the tasks array based on the taskId
+    const task = tasks.find((task) => task._id.toString() === taskId);
 
-  if (task) {
-    // Deduct coins from the user's account and mark the task as completed
-    user.coins += task.coins;
-    // Process the completion logic here
+    if (task) {
+      // Deduct coins from the user's account and mark the task as completed
+      user.coins += task.coins;
+      user.completedTasks.push(task._id);
+      await user.save();
+    }
+  } catch (error) {
+    console.error(error);
   }
 
   res.redirect('/tasks');
 });
+
 
 // Route to render the reward-store.ejs page
 app.get('/reward-store', (req, res) => {
@@ -980,22 +994,28 @@ app.get('/reward-store', (req, res) => {
   res.render('reward-store', { user, rewards });
 });
 
-// Handle buying a reward
-app.post('/buy-reward', (req, res) => {
+app.post('/buy-reward', async (req, res) => {
   const user = req.user;
   const rewardId = req.body.rewardId;
 
-  // Find the reward in the rewards array based on the rewardId
-  const reward = rewards.find((reward) => reward._id === rewardId);
+  try {
+    // Find the reward in the rewards array based on the rewardId
+    const reward = rewards.find((reward) => reward._id.toString() === rewardId);
 
-  if (reward && user.coins >= reward.coins) {
-    // Deduct coins from the user's account and grant the reward
-    user.coins -= reward.coins;
-    // Process the purchase logic here
+    if (reward && user.coins >= reward.coins) {
+      // Deduct coins from the user's account and grant the reward
+      user.coins -= reward.coins;
+      // Process the purchase logic here
+
+      await user.save();
+    }
+  } catch (error) {
+    console.error(error);
   }
 
   res.redirect('/reward-store');
 });
+
 
 
 
