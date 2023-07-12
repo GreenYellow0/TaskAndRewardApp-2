@@ -439,6 +439,10 @@ app.get('/looking-for-keyholder-questions', (req, res) => {
   res.render('looking-for-keyholder-questions');
 });
 
+app.get('/disclaimer', (req, res) => {
+  res.render('disclaimer');
+});
+
 
 
 app.post('/saveCageAlarm', (req, res) => {
