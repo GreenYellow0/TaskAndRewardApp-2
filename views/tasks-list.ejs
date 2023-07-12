@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks Overview</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .task-container {
+      margin: 20px;
+    }
+    
+    .task-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .task {
+      flex: 0 0 25%;
+      padding: 10px;
+      border: 1px solid #dddddd;
+      box-sizing: border-box;
+    }
+    
+    .coins {
+      flex: 0 0 10%;
+      padding: 10px;
+      border: 1px solid #dddddd;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+      .task, .coins {
+        flex: 0 0 100%;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <%- include('header') %>
+
+<div class="container-normal">
+    <h1>Tasks Overview</h1>
+    <a href="/tasks" class="btn btn-primary complete-button">Go Back</a></p>
+</div>
+
+
+  <div class="task-container">
+    <% if (user) { %>
+      <% tasks.forEach((task) => { %>
+        <div class="task-row">
+          <div class="task"><%= task.title %></div>
+          <div class="coins"><%= task.coins %></div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>Please sign in to view tasks.</p>
+    <% } %>
+  </div>
+
+  <%- include('footer') %>
+
+  <script src="/script.js"></script>
+</body>
+</html>

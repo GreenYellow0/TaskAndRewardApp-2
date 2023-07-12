@@ -423,6 +423,14 @@ app.get('/basic-questions', (req, res) => {
   res.render('basic-questions', { user });
 });
 
+app.get('/tasks-list', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+
+  const taskId = req.body.taskId;
+  res.render('tasks-list', { user, tasks,  });  
+});
+
+
 app.get('/basic-questions', (req, res) => {
   res.render('basic-questions', { user: req.user });
 });
@@ -905,19 +913,56 @@ app.post('/buyReward', async (req, res) => {
 const tasks = [
   {
     _id: new mongoose.Types.ObjectId(),
-    title: 'Task 1',
+    title: 'Butt plug for 15 minutes',
+    coins: 3
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Butt plug for 30 minutes',
+    coins: 6
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Butt plug for 1 hour',
     coins: 10
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    title: 'Task 2',
-    coins: 20
+    title: 'Wearing nipple clamps for 15 minutes',
+    coins: 3
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    title: 'Task 3',
-    coins: 30
-  }
+    title: 'Wearing nipple clamps for 30 minutes',
+    coins: 7
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'No underwear for 24 hours',
+    coins: 5
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Spank your ass hard 10 times',
+    coins: 2
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Spank your ass normal 20 times',
+    coins: 2
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Spank your balls gently 5 times',
+    coins: 5
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Writing task ( I must be locked at all times ) 20X',
+    coins: 3
+  },
+
+
   // Add more tasks as needed
 ];
 
@@ -925,18 +970,18 @@ const tasks = [
 const rewards = [
   {
     _id: new mongoose.Types.ObjectId(),
-    title: 'Reward 1',
-    coins: 50
+    title: 'Caged Orgasm!',
+    coins: 1000
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    title: 'Reward 2',
-    coins: 100
+    title: 'Ruined Orgasm ( cage off and ruin your orgasm)',
+    coins: 1500
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    title: 'Reward 3',
-    coins: 150
+    title: 'Full Orgasm! ( no cage full pleasure )',
+    coins: 2500
   }
   // Add more rewards as needed
 ];

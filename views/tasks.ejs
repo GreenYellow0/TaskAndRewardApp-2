@@ -6,27 +6,114 @@
   <title>Tasks</title>
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .task-container {
+      margin: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    
+    .task-card {
+      width: calc(20% - 20px);
+      margin-bottom: 20px;
+      border: 1px solid #dddddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+    }
+    
+    .task-title {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    
+    .task-coins {
+      margin-bottom: 20px;
+    }
+    
+    .complete-button {
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 1700px) {
+      .task-card {
+        width: calc(20% - 20px);
+      }
+    }
+    
+    @media (max-width: 1350px) {
+      .task-card {
+        width: calc(25% - 20px);
+      }
+    }
+    
+    @media (max-width: 1000px) {
+      .task-card {
+        width: calc(33.33% - 20px);
+      }
+    }
+    
+    @media (max-width: 700px) {
+      .task-card {
+        width: calc(50% - 20px);
+      }
+    }
+    
+    @media (max-width: 500px) {
+      .task-card {
+        width: calc(100% - 20px);
+      }
+    }
+  </style>
 </head>
 <body>
   <%- include('header') %>
 
-  <h1>Tasks</h1>
-  <% if (user) { %>
-    <% tasks.forEach((task) => { %>
-      <p><%= task.title %> - Coins: <%= task.coins %></p>
-      <% if (completedTaskIds && completedTaskIds.includes(task._id)) { %>
-        <p>Task completed!</p>
-      <% } else { %>
-        <form action="/complete-task" method="POST">
-          <input type="hidden" name="taskId" value="<%= task._id %>">
-          <button type="submit">Complete</button>
-        </form>
-      <% } %>
-    <% }); %>
-  <% } else { %>
-    <p>Please sign in to view tasks.</p>
-  <% } %>
+  <div class="container-normal">
+    <h1>Tasks</h1>
+    <p>See the full tasks overview here <a href="/tasks-list" class="btn btn-primary complete-button">Complete</a></p>
+  </div>
   
+
+
+  <div class="task-container">
+    <% if (user) { %>
+      <% tasks.forEach((task) => { %>
+        <div class="task-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="task-title"><%= task.title %></h4>
+              <p class="task-coins">Coins: <%= task.coins %></p>
+              <% if (completedTaskIds && completedTaskIds.includes(task._id)) { %>
+                <p>Task completed!</p>
+              <% } else { %>
+                <form action="/complete-task" method="POST">
+                  <input type="hidden" name="taskId" value="<%= task._id %>">
+                  <button type="submit" class="btn btn-primary complete-button">Complete</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>Please sign in to view tasks.</p>
+    <% } %>
+  </div>
 
   <%- include('footer') %>
 
