@@ -981,6 +981,41 @@ const tasks = [
     title: 'Kneel naked for 15 minutes',
     coins: 3
   },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Pretending to jerk off could be with a dildo or just make the movements with your hands for 10 minutes.',
+    coins: 2
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Wear the same underwear for 3 days.',
+    coins: 10
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Gag yourself for 15 minutes this can be done with a sock or underwear etc..',
+    coins: 3
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Gag yourself for 30 minutes this can be done with a sock or underwear etc..',
+    coins: 7
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Look at porn for 1 hour without touching your caged cock!',
+    coins: 5
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Work-out / exercise for 30 minutes.',
+    coins: 5
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Take a walk for 30 minutes while wearing a butt plug',
+    coins: 7
+  },
 
 
   // Add more tasks as needed
