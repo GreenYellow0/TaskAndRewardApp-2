@@ -961,6 +961,26 @@ const tasks = [
     title: 'Writing task ( I must be locked at all times ) 20X',
     coins: 3
   },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Stand in the corner naked for 15 minutes',
+    coins: 3
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Stand in the corner naked for 30 minutes',
+    coins: 6
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Stand in the corner naked for 1 hour',
+    coins: 10
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Kneel naked for 15 minutes',
+    coins: 3
+  },
 
 
   // Add more tasks as needed
@@ -975,7 +995,7 @@ const rewards = [
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    title: 'Ruined Orgasm ( cage off and ruin your orgasm)',
+    title: 'Ruined Orgasm ( cage off and ruin your orgasm )',
     coins: 1500
   },
   {
