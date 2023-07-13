@@ -6,15 +6,21 @@
   <title>Task And Reward</title>
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
 <body>
   <%- include('header') %>
 
 
-  <h1>Welcome, <%= user.username %>!</h1>
-  <p>Current Coins: <%= user.coins %></p>
-  <a href="/tasks">Tasks</a>
-  <a href="/reward-store">Reward Store</a>
+
+  <div class="container-normal">
+    <h1>Welcome, <%= user.username %> to Task And Reward!</h1>
+    <p>Current Coins: <%= user.coins %></p>
+    <a href="/tasks" class="btn btn-primary complete-button">Tasks</a> <br>
+    <a href="/reward-store" class="btn btn-primary complete-button">Reward Store</a>
+  </div>
   
 
   <%- include('footer') %>
