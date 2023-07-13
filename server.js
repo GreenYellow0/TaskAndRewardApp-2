@@ -1045,7 +1045,6 @@ const rewards = [
   // Add more rewards as needed
 ];
 
-
 // Route to render the task-and-reward.ejs page
 app.get('/task-and-reward', (req, res) => {
   const user = req.user;
@@ -1059,7 +1058,6 @@ app.get('/tasks', async (req, res) => {
   if (user) {
     try {
       const userWithCompletedTasks = await User.findById(user._id).populate('completedTasks');
-
       completedTaskIds = userWithCompletedTasks.completedTasks.map((task) => task._id.toString());
     } catch (error) {
       console.error(error);
@@ -1068,7 +1066,6 @@ app.get('/tasks', async (req, res) => {
 
   res.render('tasks', { user, tasks, completedTaskIds });
 });
-
 
 app.post('/complete-task', async (req, res) => {
   const user = req.user;
@@ -1079,17 +1076,41 @@ app.post('/complete-task', async (req, res) => {
     const task = tasks.find((task) => task._id.toString() === taskId);
 
     if (task) {
-      // Deduct coins from the user's account and mark the task as completed
-      user.coins += task.coins;
-      user.completedTasks.push(task._id);
-      await user.save();
+      // Check if the task has a cooldown period
+      const cooldownPeriod = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+      if (task.lastCompleted && Date.now() - new Date(task.lastCompleted) < cooldownPeriod) {
+        // Task completed within the cooldown period, display a pop-up message
+        res.send(`
+          <script>
+            alert('You have already completed this task. Please wait 24 hours before completing it again.');
+            window.location.href = '/tasks';
+          </script>
+        `);
+      } else {
+        // Deduct coins from the user's account and mark the task as completed
+        user.coins += task.coins;
+        user.completedTasks.push(task._id);
+        task.lastCompleted = new Date(); // Update the last completion time of the task
+
+        // Save the user and task using their respective models
+        await Promise.all([user.save(), Task.findByIdAndUpdate(task._id, task)]);
+
+        // Display a pop-up message with the earned coins
+        res.send(`
+          <script>
+            alert('Task completed! You earned ${task.coins} coins.');
+            window.location.href = '/tasks';
+          </script>
+        `);
+      }
     }
   } catch (error) {
     console.error(error);
+    res.redirect('/tasks');
   }
-
-  res.redirect('/tasks');
 });
+
 
 
 
