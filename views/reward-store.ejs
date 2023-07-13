@@ -70,30 +70,34 @@
 </div>
 
 
-  <div class="reward-container">
-    <% if (user) { %>
-      <% rewards.forEach((reward) => { %>
-        <div class="reward-card">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="reward-title"><%= reward.title %></h4>
-              <p class="reward-coins">Coins: <%= reward.coins %></p>
-              <% if (user.coins >= reward.coins) { %>
-                <form action="/buy-reward" method="POST">
-                  <input type="hidden" name="rewardId" value="<%= reward._id %>">
-                  <button type="submit" class="btn btn-primary buy-button">Buy Reward</button>
-                </form>
-              <% } else { %>
-                <p>Not enough coins to buy this reward.</p>
-              <% } %>
+<div class="reward-container">
+  <% if (user) { %>
+    <% rewards.forEach((reward) => { %>
+      <div class="reward-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="reward-title"><%= reward.title %></h4>
+            <div class="reward-coins">
+              <img src="/images/icons8-coin-48.png" alt="Coin" style="width: 2em; height: 2em;">
+              <span style="font-size: 1.3em;"><%= reward.coins %></span>
             </div>
+            <% if (user.coins >= reward.coins) { %>
+              <form action="/buy-reward" method="POST">
+                <input type="hidden" name="rewardId" value="<%= reward._id %>">
+                <button type="submit" class="btn btn-primary buy-button">Buy Reward</button>
+              </form>
+            <% } else { %>
+              <p>Not enough coins to buy this reward.</p>
+            <% } %>
           </div>
         </div>
-      <% }); %>
-    <% } else { %>
-      <p>Please sign in to view the reward store.</p>
-    <% } %>
-  </div>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <p>Please sign in to view the reward store.</p>
+  <% } %>
+</div>
+
 
   <%- include('footer') %>
 
