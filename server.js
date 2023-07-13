@@ -1115,6 +1115,7 @@ app.post('/complete-task', async (req, res) => {
 
 
 
+
 // Route to render the reward-store.ejs page
 app.get('/reward-store', (req, res) => {
   const user = req.user;
