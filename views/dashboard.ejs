@@ -8,11 +8,24 @@
   <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
+
+<style>
+  #rcorners2 {
+  border-radius: 25px;
+  border: 2px solid #012cff;
+  padding: 20px; 
+  width: 320px;
+  height: 100px;  
+}
+</style>
+
 <body>
   <%- include('header') %>
 
   <div class="container-normal">
-    <h1>Welcome, <%= user ? user.username : '' %>!</h1>
+    <h1>Welcome, <%= user ? user.username : '' %>!</h1> <br>
+    <p id="rcorners2">Task And Reward current coins: <%= user.coins %> <br> Start earning coins <a href="/task-and-reward">here</a>
+    </p>
   </div>
 
   <%- include('footer') %>

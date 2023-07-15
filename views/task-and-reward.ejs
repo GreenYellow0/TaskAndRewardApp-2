@@ -9,28 +9,49 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 </head>
+
+<style>
+    .rounded-card {
+  border-radius: 25px;
+  border: 2px solid #012cff;
+  padding: 20px; 
+  width: 320px;
+  height: 140px;  
+}
+.rounded-card {
+  border-radius: 10px;
+  padding: 10px; /* Updated padding value */
+  text-align: center;
+  width: 150px;
+}
+
+.rounded-card img {
+  width: 50px;
+}
+
+.rounded-card p {
+  margin-top: 10px;
+}
+</style>
+
 <body>
   <%- include('header') %>
 
-
-
   <div class="container-normal">
-    <h1>Welcome, <%= user.username %> to Task And Reward!</h1>
-    <div class="w3-card-4" style="width: 200px; display: flex; flex-direction: column; align-items: center;">
-      <img src="/images/icons8-coin-48.png" alt="Alps" style="width: 50px;">
+    <h1>Welcome, <%= user.username %> to Task And Reward!</h1> <br>
+    <div class="rounded-card">
+      <img src="/images/icons8-coin-48.png" alt="Alps">
       <div class="w3-container w3-center">
         <p>Current Coins: <%= user.coins %></p>
       </div>
-    </div> <br>
-    <a href="/tasks" class="btn btn-primary complete-button">Tasks</a> <br><br>
+    </div>
+    <br>
+    <a href="/tasks" class="btn btn-primary complete-button">Tasks</a>
+    <br><br>
     <a href="/reward-store" class="btn btn-primary complete-button">Reward Store</a>
   </div>
-
-  
-  
-  
 
   <%- include('footer') %>
 

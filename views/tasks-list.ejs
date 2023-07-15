@@ -10,37 +10,51 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style>
-
-    
     .task-container {
       margin: 20px;
     }
-    
-    .task-row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    
+  
     .task {
-      flex: 0 0 25%;
       padding: 10px;
       border: 1px solid #dddddd;
-      box-sizing: border-box;
+      max-width: 200px; /* Adjust the width as per your preference */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    
+  
     .coins {
-      flex: 0 0 10%;
       padding: 10px;
       border: 1px solid #dddddd;
-      box-sizing: border-box;
       text-align: center;
     }
-    
-    @media (max-width: 768px) {
+  
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+  
+    th, td {
+      text-align: left;
+      padding: 16px;
+    }
+  
+    tr:nth-child(even) {
+      border: 1px solid #dddddd;
+    }
+  
+    /* Responsive layout - makes a one column-layout instead of a two-column layout */
+    @media (max-width: 375px) {
       .task, .coins {
-        flex: 0 0 100%;
+        flex: 100%;
         width: auto;
+      }
+
+      .task-container {
+        overflow-x: auto;
+        white-space: normal;
       }
     }
   </style>
@@ -48,20 +62,24 @@
 <body>
   <%- include('header') %>
 
-<div class="container-normal">
+  <div class="container-normal">
     <h1>Tasks Overview</h1>
-    <a href="/tasks" class="btn btn-primary complete-button">Go Back</a></p>
-</div>
-
+    <a href="/tasks" class="btn btn-primary complete-button">Go Back</a>
+  </div>
 
   <div class="task-container">
     <% if (user) { %>
-      <% tasks.forEach((task) => { %>
-        <div class="task-row">
-          <div class="task"><%= task.title %></div>
-          <div class="coins"><%= task.coins %></div>
-        </div>
-      <% }); %>
+      <table>
+
+        <tbody>
+          <% tasks.forEach((task) => { %>
+            <tr>
+              <td colspan="2"><span><%= task.title %></span></td>
+              <td class="coins"><%= task.coins %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
     <% } else { %>
       <p>Please sign in to view tasks.</p>
     <% } %>
