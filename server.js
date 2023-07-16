@@ -1022,7 +1022,7 @@ const tasks2 = [
   {
     _id: new mongoose.Types.ObjectId(),
     title: 'Task 1',
-    description: 'This is the description for Task 1',
+    description: 'This is the description for Task 1\nNew line',
     coins: 5
   },
   {

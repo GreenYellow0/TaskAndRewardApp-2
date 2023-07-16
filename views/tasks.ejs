@@ -89,6 +89,19 @@
     width: 100%;
   }
 }
+.task-description {
+  white-space: pre-line;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.1em; /* Adjust the font size as per your preference */
+}
+
+.task-container.task-container2 .task-title {
+  font-size: 1.3em; /* Adjust the font size as per your preference */
+}
+
+
+
 
   </style>
 </head>
@@ -107,6 +120,16 @@
   </div>
   <div class="alert alert-info">
     <strong>Info!</strong> If you like to see more tasks added please contact GreenYellow on discord.
+  </div>
+
+  <div class="container-normal">
+    <h2>Task List!</h2>
+    <p><a href="#C1">Tasks</a></p> 
+    <p><a href="#C2">Special Tasks</a></p>
+  </div>
+
+  <div class="container-normal">
+    <h2 id="C1">Tasks</h2>
   </div>
   
   <div class="task-container">
@@ -140,8 +163,8 @@
   <hr>
   
   <div class="container-normal">
-    <h2>Special Tasks</h2>
-    <p>Here you can earn more coins, but with more tasks</p>
+    <h2 id="C2">Special Tasks</h2>
+    <p>Here you can earn more coins, with the special tasks</p>
   </div>
   <div class="task-container task-container2">
     <% if (user) { %>
@@ -149,8 +172,8 @@
         <div class="task-card">
           <div class="card">
             <div class="card-body">
-              <h4 class="task-title"><%= task.title %></h4>
-              <p class="task-description"><%= task.description %></p>
+              <h4 class="task-title" style="font-size: 1.5em;"><%= task.title %></h4>
+              <p class="task-description" style="font-size: 1.1em;"><%= task.description %></p>
               <div class="task-coins">
                 <img src="/images/icons8-coin-48.png" alt="Coin" style="width: 2em; height: 2em;">
                 <span style="font-size: 1.3em;"><%= task.coins %></span>
