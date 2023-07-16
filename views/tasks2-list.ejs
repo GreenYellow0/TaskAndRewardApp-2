@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Tasks Overview</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="icon" href="/images/LOGO-removebg-preview.png" sizes="32x32">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    .task-container {
+      margin: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 16px;
+    }
+
+    tr:nth-child(even) {
+      border: 1px solid #dddddd;
+    }
+
+    /* Responsive layout */
+    @media (max-width: 767px) {
+      .task-container {
+        overflow-x: auto;
+      }
+    }
+
+    /* Task title column */
+    .task-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid #dddddd;
+      width: 40px;
+    }
+
+    /* Task description column */
+    .task-description {
+      white-space: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid #dddddd;
+    }
+
+    /* Coins column */
+    .coins {
+      text-align: center;
+      border: 1px solid #dddddd;
+    }
+  </style>
+</head>
+<body>
+  <%- include('header') %>
+
+  <div class="container-normal">
+    <h1>Special Tasks Overview</h1>
+    <a href="/tasks" class="btn btn-primary complete-button">Go Back</a>
+  </div>
+
+  <div class="task-container">
+    <% if (user) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Coins</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tasks2.forEach((task) => { %>
+            <tr>
+              <td class="task-title"><%= task.title %></td>
+              <td class="task-description"><%= task.description %></td>
+              <td class="coins"><%= task.coins %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>Please sign in to view tasks.</p>
+    <% } %>
+  </div>
+
+  <%- include('footer') %>
+
+  <script src="/script.js"></script>
+</body>
+</html>

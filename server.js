@@ -48,25 +48,6 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     time: Date
   });
   
-/*   const taskSchema = new mongoose.Schema({
-    name: { type: String },
-    coins: { type: Number },
-  });
-  
-  const rewardSchema = new mongoose.Schema({
-    name: { type: String },
-    coins: { type: Number },
-  });
-  
-  const tarlockSchema = new mongoose.Schema({
-    name: String,
-    tasks: [taskSchema],
-    rewards: [rewardSchema],
-  });*/
-
-
-
-  
   const userSchema = new mongoose.Schema({
     username: { type: String, unique: true },
     password: String,
@@ -75,9 +56,6 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     orgasms: [orgasmSchema],
     cageAlarms: [cageAlarmSchema],
     coins: { type: Number, default: 0 },
-/**    tarLocks: [tarlockSchema],
-    coins: { type: Number, default: 0 },
-    ownedRewards: [rewardSchema],  */
     completedTasks: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -429,6 +407,14 @@ app.get('/tasks-list', (req, res) => {
   const taskId = req.body.taskId;
   res.render('tasks-list', { user, tasks,  });  
 });
+
+app.get('/tasks2-list', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+
+  const taskId = req.body.taskId;
+  res.render('tasks2-list', { user, tasks2,  });  
+});
+
 
 
 app.get('/basic-questions', (req, res) => {
@@ -1026,9 +1012,40 @@ const tasks = [
     coins: 7
   },
 
-
   // Add more tasks as needed
 ];
+
+
+///longer tasks
+
+const tasks2 = [
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Task 1',
+    description: 'This is the description for Task 1',
+    coins: 5
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Task 2',
+    description: 'This is the description for Task 2',
+    coins: 10
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Task 3',
+    description: 'This is the description for Task 3',
+    coins: 8
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
+    title: 'Task 4',
+    description: 'This is the description for Task 4',
+    coins: 8
+  },
+  // Add more tasks as needed
+];
+
 
 
 const rewards = [
@@ -1055,7 +1072,7 @@ app.get('/task-and-reward', (req, res) => {
   const user = req.user;
   res.render('task-and-reward', { user });
 });
-
+///////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/tasks', async (req, res) => {
   const user = req.user;
   let completedTaskIds = [];
@@ -1069,16 +1086,19 @@ app.get('/tasks', async (req, res) => {
     }
   }
 
-  res.render('tasks', { user, tasks, completedTaskIds });
+  res.render('tasks', { user, tasks, tasks2, completedTaskIds });
 });
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post('/complete-task', async (req, res) => {
   const user = req.user;
   const taskId = req.body.taskId;
 
   try {
-    // Find the task in the tasks array based on the taskId
-    const task = tasks.find((task) => task._id.toString() === taskId);
+    // Find the task in either tasks or tasks2 based on the taskId
+    const task = tasks.find((task) => task._id.toString() === taskId) ||
+      tasks2.find((task) => task._id.toString() === taskId);
 
     if (task) {
       // Check if the task has a cooldown period
@@ -1115,11 +1135,7 @@ app.post('/complete-task', async (req, res) => {
     res.redirect('/tasks');
   }
 });
-
-
-
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Route to render the reward-store.ejs page
 app.get('/reward-store', (req, res) => {
@@ -1149,7 +1165,7 @@ app.post('/buy-reward', async (req, res) => {
   res.redirect('/reward-store');
 });
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

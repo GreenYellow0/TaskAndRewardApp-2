@@ -11,71 +11,85 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style>
 
-    
-    .task-container {
-      margin: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-    
-    .task-card {
-      width: calc(20% - 20px);
-      margin-bottom: 20px;
-      border: 1px solid #dddddd;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    
-    .card-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px;
-    }
-    
-    .task-title {
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-    
-    .task-coins {
-      margin-bottom: 20px;
-    }
-    
-    .complete-button {
-      margin-bottom: 20px;
-    }
-    
-    @media (max-width: 1700px) {
-      .task-card {
-        width: calc(20% - 20px);
-      }
-    }
-    
-    @media (max-width: 1350px) {
-      .task-card {
-        width: calc(25% - 20px);
-      }
-    }
-    
-    @media (max-width: 1000px) {
-      .task-card {
-        width: calc(33.33% - 20px);
-      }
-    }
-    
-    @media (max-width: 700px) {
-      .task-card {
-        width: calc(50% - 20px);
-      }
-    }
-    
-    @media (max-width: 500px) {
-      .task-card {
-        width: calc(100% - 20px);
-      }
-    }
+.task-container {
+  margin: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.task-container .task-card {
+  width: calc(20% - 20px);
+  margin-bottom: 20px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.task-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.task-coins {
+  margin-bottom: 20px;
+}
+
+.complete-button {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1700px) {
+  .task-container .task-card {
+    width: calc(20% - 20px);
+  }
+}
+
+@media (max-width: 1350px) {
+  .task-container .task-card {
+    width: calc(25% - 20px);
+  }
+}
+
+@media (max-width: 1000px) {
+  .task-container .task-card {
+    width: calc(33.33% - 20px);
+  }
+}
+
+@media (max-width: 700px) {
+  .task-container .task-card {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 500px) {
+  .task-container .task-card {
+    width: calc(100% - 20px);
+  }
+}
+
+.task-container.task-container2 {
+  justify-content: flex-start;
+}
+
+.task-container.task-container2 .task-card {
+  width: calc(50% - 20px);
+}
+
+@media (max-width: 1000px) {
+  .task-container.task-container2 .task-card {
+    width: 100%;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -84,9 +98,10 @@
   <div class="container-normal">
     <h1>Tasks</h1>
     <a href="/task-and-reward" class="btn btn-primary complete-button">Task And Reward</a> <br>
-    <a href="/tasks-list" class="btn btn-primary complete-button">See the full tasks overview here</a>
+    <a href="/tasks-list" class="btn btn-primary complete-button">See the full tasks overview here</a> <br>
+    <a href="/tasks2-list" class="btn btn-primary complete-button">See the special tasks overview here</a>
   </div>
-
+  
   <div class="alert alert-danger">
     <strong>The creator of this website is not responsible for any actions taken based on the information provided.<br> Use these tasks at your own risk.</strong>
   </div>
@@ -122,9 +137,45 @@
     <% } %>
   </div>
   
+  <hr>
+  
+  <div class="container-normal">
+    <h2>Special Tasks</h2>
+    <p>Here you can earn more coins, but with more tasks</p>
+  </div>
+  <div class="task-container task-container2">
+    <% if (user) { %>
+      <% tasks2.forEach((task) => { %>
+        <div class="task-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="task-title"><%= task.title %></h4>
+              <p class="task-description"><%= task.description %></p>
+              <div class="task-coins">
+                <img src="/images/icons8-coin-48.png" alt="Coin" style="width: 2em; height: 2em;">
+                <span style="font-size: 1.3em;"><%= task.coins %></span>
+              </div>
+              <% if (completedTaskIds && completedTaskIds.includes(task._id)) { %>
+                <p>Task completed!</p>
+              <% } else { %>
+                <form action="/complete-task" method="POST">
+                  <input type="hidden" name="taskId" value="<%= task._id %>">
+                  <button type="submit" class="btn btn-primary complete-button">Complete</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>Please sign in to view tasks.</p>
+    <% } %>
+  </div>
+  
+
+  
   <%- include('footer') %>
-
-
+  
 
   <script src="/script.js"></script>
 </body>
