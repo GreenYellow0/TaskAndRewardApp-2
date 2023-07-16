@@ -390,6 +390,11 @@ app.get('/notes', (req, res) => {
   res.render('notes', { user });
 });
 
+app.get('/app', (req, res) => {
+  const user = req.user; // Assuming you have stored the user object in the req.user property
+  res.render('app', { user });
+});
+
 
 app.get('/questions-page', (req, res) => {
   const user = req.user; // Assuming you have stored the user object in the req.user property
