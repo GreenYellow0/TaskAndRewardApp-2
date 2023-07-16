@@ -987,6 +987,11 @@ const tasks = [
   },
   {
     _id: new mongoose.Types.ObjectId(),
+    title: 'Kneel naked on rice for 15 minutes',
+    coins: 5
+  },
+  {
+    _id: new mongoose.Types.ObjectId(),
     title: 'Pretending to jerk off could be with a dildo or just make the movements with your hands for 10 minutes.',
     coins: 2
   },
